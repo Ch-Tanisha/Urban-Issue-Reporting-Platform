@@ -1,0 +1,149 @@
+/* ============================================================
+   Auth Page CSS
+   ============================================================ */
+
+.auth-root {
+  display: flex; min-height: 100vh;
+}
+
+/* ---- Image Panel ---- */
+.auth-image-panel {
+  flex: 1;
+  background:
+    linear-gradient(135deg, rgba(37,99,235,0.75) 0%, rgba(5,150,105,0.7) 100%),
+    url('https://www.shutterstock.com/shutterstock/photos/1924527770/display_1500/stock-photo-srinagar-jammu-and-kashmir-india-august-kit-wearing-frontline-warriors-sanitising-streets-1924527770.jpg')
+    center/cover no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px; color: white; position: relative;
+}
+.auth-image-panel::before {
+  content:''; position:absolute; inset:0;
+  background: rgba(0,0,0,0.1);
+}
+.auth-image-content { position: relative; z-index: 1; max-width: 400px; }
+.auth-brand { font-size: 1.2rem; font-weight: 800; margin-bottom: 24px; opacity: 0.9; }
+.auth-image-content h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900; line-height: 1.15; margin-bottom: 18px;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.3);
+}
+.auth-image-content p {
+  font-size: 1rem; line-height: 1.65; opacity: 0.9;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  margin-bottom: 32px;
+}
+.auth-badges { display: flex; gap: 14px; flex-wrap: wrap; }
+.auth-badge {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding: 14px 18px; border-radius: 12px; text-align: center;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.auth-badge-num { font-size: 1.5rem; font-weight: 800; }
+.auth-badge-lbl { font-size: 0.75rem; opacity: 0.85; margin-top: 2px; }
+
+/* ---- Form Panel ---- */
+.auth-form-panel {
+  flex: 1; background: white;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px; overflow-y: auto;
+}
+.auth-form-inner { width: 100%; max-width: 420px; }
+.auth-logo {
+  font-size: 1.2rem; font-weight: 800;
+  background: var(--gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+.auth-form-inner h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+.auth-subtitle { color: var(--text-light); font-size: 0.88rem; margin-bottom: 28px; }
+
+/* ---- Fields ---- */
+.auth-field { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+.auth-field label {
+  font-size: 0.83rem; font-weight: 600; color: var(--text);
+}
+.auth-field input,
+.auth-field select,
+.auth-field textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-solid);
+  border-radius: 9px; font-size: 0.88rem;
+  color: var(--text); background: #fafafa;
+  transition: var(--transition); outline: none; font-family: inherit;
+}
+.auth-field input:focus,
+.auth-field select:focus,
+.auth-field textarea:focus {
+  border-color: var(--primary); background: white;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.auth-field input.err,
+.auth-field select.err,
+.auth-field textarea.err { border-color: var(--danger); }
+.auth-field textarea { resize: vertical; min-height: 64px; }
+.auth-err { font-size: 0.75rem; color: var(--danger); }
+
+.auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Password toggle */
+.auth-pwd { position: relative; }
+.auth-pwd input { width: 100%; padding-right: 40px; }
+.auth-eye {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; font-size: 1rem; cursor: pointer;
+  color: var(--text-light); line-height: 1;
+}
+
+/* Strength bar */
+.auth-strength-bar {
+  height: 4px; background: var(--bg-muted);
+  border-radius: 2px; margin-top: 6px; overflow: hidden;
+}
+
+/* Checkbox */
+.auth-checkbox {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 18px 0 4px;
+}
+.auth-checkbox input { margin-top: 3px; accent-color: var(--primary); }
+.auth-checkbox label { font-size: 0.83rem; color: var(--text); }
+.auth-checkbox a { color: var(--primary); font-weight: 600; }
+
+/* Submit */
+.auth-submit {
+  width: 100%; padding: 13px;
+  background: var(--gradient); color: white;
+  border: none; border-radius: var(--radius-full);
+  font-size: 0.95rem; font-weight: 700;
+  transition: var(--transition);
+  box-shadow: 0 6px 20px rgba(37,99,235,0.3);
+  margin-top: 8px;
+}
+.auth-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,99,235,0.4); }
+
+/* Switch */
+.auth-switch {
+  text-align: center; margin-top: 20px;
+  font-size: 0.875rem; color: var(--text-light);
+}
+.auth-switch button {
+  background: none; border: none;
+  color: var(--primary); font-weight: 700; cursor: pointer;
+  font-size: 0.875rem;
+}
+.auth-switch button:hover { text-decoration: underline; }
+
+/* Scroll area for signup */
+.auth-scroll-area {
+  max-height: calc(100vh - 240px);
+  overflow-y: auto; padding-right: 4px;
+}
+.auth-scroll-area::-webkit-scrollbar { width: 4px; }
+.auth-scroll-area::-webkit-scrollbar-thumb { background: var(--bg-muted); border-radius: 2px; }
+
+@media (max-width: 768px) {
+  .auth-image-panel { display: none; }
+  .auth-form-panel  { padding: 32px 20px; }
+  .auth-row { grid-template-columns: 1fr; }
+}

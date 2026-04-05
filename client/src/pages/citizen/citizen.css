@@ -1,0 +1,139 @@
+/* ============================================================
+   Citizen Dashboard CSS
+   ============================================================ */
+
+/* Welcome Banner */
+.citizen-welcome {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  background: var(--bg);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  gap: 20px;
+  background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+  border-left: 4px solid var(--primary);
+}
+.citizen-welcome-eye {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--primary); margin-bottom: 6px;
+}
+.citizen-welcome-title {
+  font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1.2;
+}
+.citizen-welcome-title span { color: var(--primary); }
+.citizen-welcome-sub { color: var(--text-light); font-size: 0.88rem; margin-top: 6px; max-width: 480px; }
+.citizen-welcome-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+
+/* Info Grid */
+.citizen-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* Quick Action Chips */
+.citizen-action-chip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-solid);
+  background: var(--bg-light);
+  color: var(--text); font-size: 0.88rem; font-weight: 600;
+  transition: var(--transition); text-align: left; width: 100%;
+}
+.citizen-action-chip:hover {
+  border-color: var(--primary);
+  background: rgba(37,99,235,0.04);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+.citizen-action-chip svg { margin-left: auto; color: var(--primary); }
+
+/* Breakdown Rows */
+.breakdown-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-solid);
+}
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-bar-wrap {
+  flex: 1; height: 8px; background: var(--bg-muted);
+  border-radius: 4px; overflow: hidden;
+}
+.breakdown-bar {
+  height: 100%; border-radius: 4px; transition: width 0.6s ease;
+  display: block;
+}
+
+/* Officer Contact Card */
+.officer-contact-card {}
+.officer-contact-inner {
+  display: flex; gap: 20px; align-items: flex-start;
+}
+.officer-avatar-lg {
+  width: 60px; height: 60px; border-radius: 16px;
+  background: var(--gradient); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 800;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+  flex-shrink: 0;
+}
+.officer-name  { font-size: 1.05rem; font-weight: 700; }
+.officer-block { font-size: 0.82rem; color: var(--text-light); margin-top: 2px; }
+.officer-contact-link {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; color: var(--primary); margin-top: 6px;
+  text-decoration: none; font-weight: 500;
+}
+.officer-contact-link:hover { text-decoration: underline; }
+
+/* Recent Activity */
+.recent-report-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid var(--border-solid);
+  gap: 16px;
+}
+.recent-report-row:last-child { border-bottom: none; }
+.recent-report-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.recent-report-meta  { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+
+/* Report Form Grid */
+.report-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+/* Photo Upload */
+.photo-upload-area {
+  border: 2px dashed var(--border-solid); border-radius: var(--radius);
+  min-height: 160px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition); overflow: hidden;
+  background: var(--bg-light);
+}
+.photo-upload-area:hover { border-color: var(--primary); background: rgba(37,99,235,0.03); }
+.photo-upload-placeholder { text-align: center; color: var(--text-light); }
+.photo-upload-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+.photo-upload-placeholder p { font-size: 0.9rem; font-weight: 600; }
+.photo-upload-placeholder small { font-size: 0.78rem; }
+.photo-preview-img { max-width: 100%; max-height: 300px; object-fit: contain; border-radius: var(--radius); }
+
+/* Profile */
+.profile-avatar-circle {
+  width: 100px; height: 100px; border-radius: 28px;
+  background: var(--gradient); color: white;
+  font-size: 2rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 12px 30px rgba(37,99,235,0.3);
+}
+.profile-chip {
+  display: inline-block; padding: 5px 14px;
+  background: var(--status-resolved-bg);
+  border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600;
+}
+
+/* Report Page */
+.report-page { max-width: 900px; }
