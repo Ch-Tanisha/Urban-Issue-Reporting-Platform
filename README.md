@@ -1,26 +1,6 @@
 Urban Issue Reporting Platform
 The Urban Issue Reporting Platform is a React-based frontend application that allows users to report and view civic issues such as potholes, garbage, and infrastructure problems. It provides a simple and user-friendly interface for highlighting urban issues.
 
- 
-Project Structure
-
-Urban-Issue-Reporting-Platform/
-│
-├── client/              
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── data/
-│   │   ├── styles/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│
-├── .vscode/
-└── .gitignore
 
 How to Run This Project Locally
 
