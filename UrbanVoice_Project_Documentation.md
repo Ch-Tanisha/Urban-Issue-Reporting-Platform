@@ -1,4 +1,5 @@
 # UrbanVoice — Urban Issue Reporting Platform
+
 ## Comprehensive Project Documentation
 
 **Version:** 1.0.0 | **Stack:** MERN (MongoDB Atlas + Express + React/Vite + Node.js)  
@@ -40,16 +41,16 @@
 
 ### Key Features
 
-| Feature | Description |
-|---|---|
-| 🔐 JWT Authentication | Secure login/register with role-based access |
-| 📝 Issue Reporting | Citizens submit issues with title, category, priority, location, photo |
-| 📊 Live Analytics | Real-time stats by status, block, category, priority, monthly trend |
-| 🔔 Notifications | Auto-notifications on issue submission and every status change |
-| 👮 Officer Management | Admin creates/updates/deletes block officers |
-| 📷 Photo Upload | Multer: JPG, PNG, WEBP — max 5MB |
-| 🚩 Duplicate Flagging | Officers can flag duplicate issues |
-| 📱 Responsive UI | React + Vite, mobile-friendly |
+| Feature               | Description                                                            |
+| --------------------- | ---------------------------------------------------------------------- |
+| 🔐 JWT Authentication | Secure login/register with role-based access                           |
+| 📝 Issue Reporting    | Citizens submit issues with title, category, priority, location, photo |
+| 📊 Live Analytics     | Real-time stats by status, block, category, priority, monthly trend    |
+| 🔔 Notifications      | Auto-notifications on issue submission and every status change         |
+| 👮 Officer Management | Admin creates/updates/deletes block officers                           |
+| 📷 Photo Upload       | Multer: JPG, PNG, WEBP — max 5MB                                       |
+| 🚩 Duplicate Flagging | Officers can flag duplicate issues                                     |
+| 📱 Responsive UI      | React + Vite, mobile-friendly                                          |
 
 ---
 
@@ -85,21 +86,21 @@
 
 ## 3. Technology Stack
 
-| Layer | Technology | Version | Purpose |
-|---|---|---|---|
-| Frontend | React | 18.x | UI Framework |
-| Frontend Build | Vite | 5.x | Dev server + bundler |
-| HTTP Client | Axios | 1.x | API calls + JWT interceptor |
-| Backend | Node.js | 18+ | Server runtime |
-| Framework | Express.js | 5.x | REST API |
-| Database | MongoDB Atlas | Cloud | NoSQL document database |
-| ODM | Mongoose | 9.x | MongoDB object modeling |
-| Auth | jsonwebtoken | 9.x | JWT tokens (7-day expiry) |
-| Passwords | bcryptjs | 3.x | bcrypt hashing (salt=10) |
-| File Upload | Multer | 2.x | Multipart photo handling |
-| Dev Server | Nodemon | 3.x | Auto-restart on file change |
-| Env Vars | dotenv | 17.x | `.env` loading |
-| CORS | cors | 2.x | Cross-origin requests |
+| Layer          | Technology    | Version | Purpose                     |
+| -------------- | ------------- | ------- | --------------------------- |
+| Frontend       | React         | 18.x    | UI Framework                |
+| Frontend Build | Vite          | 5.x     | Dev server + bundler        |
+| HTTP Client    | Axios         | 1.x     | API calls + JWT interceptor |
+| Backend        | Node.js       | 18+     | Server runtime              |
+| Framework      | Express.js    | 5.x     | REST API                    |
+| Database       | MongoDB Atlas | Cloud   | NoSQL document database     |
+| ODM            | Mongoose      | 9.x     | MongoDB object modeling     |
+| Auth           | jsonwebtoken  | 9.x     | JWT tokens (7-day expiry)   |
+| Passwords      | bcryptjs      | 3.x     | bcrypt hashing (salt=10)    |
+| File Upload    | Multer        | 2.x     | Multipart photo handling    |
+| Dev Server     | Nodemon       | 3.x     | Auto-restart on file change |
+| Env Vars       | dotenv        | 17.x    | `.env` loading              |
+| CORS           | cors          | 2.x     | Cross-origin requests       |
 
 ---
 
@@ -172,17 +173,20 @@ URBAN ISSUE/
 ## 5. MongoDB Atlas Setup
 
 ### Step 1 — Create a Free Account
+
 1. Go to **https://www.mongodb.com/cloud/atlas**
 2. Click **"Try Free"** → Create account
 3. Choose **Free Tier (M0)** cluster
 
 ### Step 2 — Create a Cluster
+
 1. Cloud Provider: **AWS**
 2. Region: **ap-south-1 (Mumbai)** — nearest to India
 3. Cluster Name: `urbanissue`
 4. Click **"Create Cluster"** (takes ~3 minutes)
 
 ### Step 3 — Create a Database User
+
 1. Go to **Security → Database Access**
 2. Click **"Add New Database User"**
 3. Username: `chtanisha_urbanissue`
@@ -200,23 +204,27 @@ URBAN ISSUE/
 > For production deployment, restrict to specific server IPs only.
 
 ### Step 5 — Get Connection String
+
 1. Go to **Clusters → Connect**
 2. Choose **"Connect your application"**
 3. Driver: **Node.js**, Version: **5.5 or later**
 4. Copy the connection string:
+
 ```
 mongodb+srv://<username>:<password>@urbanissue.xxxxx.mongodb.net/urbanissue?retryWrites=true&w=majority
 ```
 
 ### Step 6 — Your Current .env (Already Configured)
+
 ```env
-MONGO_URI=mongodb+srv://chtanisha_urbanissue:$Komal5002304@urbanissue.353lq55.mongodb.net/urbanissue?retryWrites=true&w=majority&appName=urbanissue
+MONGO_URI=mongodb+srv://<db_user>:<db_password>@urbanissue.353lq55.mongodb.net/urbanissue?retryWrites=true&w=majority&appName=urbanissue
 ```
 
 > [!NOTE]
 > The database `urbanissue` is created automatically on first insert. Collections (`users`, `issues`, `blockofficers`, `notifications`) appear in Atlas after first API calls.
 
 ### Step 7 — Verify in Atlas Dashboard
+
 - Navigate to **Collections** tab
 - After making API calls you will see all 4 collections populated
 
@@ -227,18 +235,18 @@ MONGO_URI=mongodb+srv://chtanisha_urbanissue:$Komal5002304@urbanissue.353lq55.mo
 File: `server/.env`
 
 ```env
-MONGO_URI=mongodb+srv://chtanisha_urbanissue:$Komal5002304@urbanissue.353lq55.mongodb.net/urbanissue?retryWrites=true&w=majority&appName=urbanissue
-JWT_SECRET=urbanvoice_super_secret_jwt_key_2024_urban_issue_platform
+MONGO_URI=mongodb+srv://<db_user>:<db_password>@urbanissue.353lq55.mongodb.net/urbanissue?retryWrites=true&w=majority&appName=urbanissue
+JWT_SECRET=<your_jwt_secret>
 PORT=5000
 NODE_ENV=development
 ```
 
-| Variable | Description |
-|---|---|
-| `MONGO_URI` | MongoDB Atlas connection string |
+| Variable     | Description                                  |
+| ------------ | -------------------------------------------- |
+| `MONGO_URI`  | MongoDB Atlas connection string              |
 | `JWT_SECRET` | Secret for signing JWT tokens — keep private |
-| `PORT` | Express server port (5000) |
-| `NODE_ENV` | `development` or `production` |
+| `PORT`       | Express server port (5000)                   |
+| `NODE_ENV`   | `development` or `production`                |
 
 > [!CAUTION]
 > Never commit `.env` to GitHub. It is already listed in `.gitignore`.
@@ -327,15 +335,16 @@ NODE_ENV=development
 
 ### 8.1 Auth Routes — `/api/auth`
 
-| Method | Endpoint | Auth | Role | Description |
-|---|---|---|---|---|
-| POST | `/api/auth/register` | ❌ | Public | Register user |
-| POST | `/api/auth/login` | ❌ | Public | Login → get JWT |
-| GET | `/api/auth/me` | ✅ | Any | Get current user |
-| PUT | `/api/auth/profile` | ✅ | Any | Update own profile |
-| PUT | `/api/auth/password` | ✅ | Any | Change password |
+| Method | Endpoint             | Auth | Role   | Description        |
+| ------ | -------------------- | ---- | ------ | ------------------ |
+| POST   | `/api/auth/register` | ❌   | Public | Register user      |
+| POST   | `/api/auth/login`    | ❌   | Public | Login → get JWT    |
+| GET    | `/api/auth/me`       | ✅   | Any    | Get current user   |
+| PUT    | `/api/auth/profile`  | ✅   | Any    | Update own profile |
+| PUT    | `/api/auth/password` | ✅   | Any    | Change password    |
 
 **POST /api/auth/register — Body:**
+
 ```json
 {
   "name": "Priya Sharma",
@@ -353,6 +362,7 @@ NODE_ENV=development
 ```
 
 **POST /api/auth/login — Body:**
+
 ```json
 {
   "email": "priya@example.com",
@@ -362,6 +372,7 @@ NODE_ENV=development
 ```
 
 **Login — Success Response `200`:**
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5...",
@@ -378,6 +389,7 @@ NODE_ENV=development
 ```
 
 **PUT /api/auth/password — Body:**
+
 ```json
 {
   "currentPassword": "citizen123",
@@ -389,31 +401,32 @@ NODE_ENV=development
 
 ### 8.2 Issue Routes — `/api/issues`
 
-| Method | Endpoint | Auth | Role | Description |
-|---|---|---|---|---|
-| POST | `/api/issues/create` | ✅ | citizen | Submit issue (multipart/form-data) |
-| GET | `/api/issues/my` | ✅ | citizen | My submitted issues |
-| GET | `/api/issues/all` | ✅ | admin | All issues with filters |
-| GET | `/api/issues/block` | ✅ | blockofficer | Block issues |
-| PUT | `/api/issues/:id/status` | ✅ | officer/admin | Update status |
-| PUT | `/api/issues/:id/duplicate` | ✅ | officer/admin | Toggle duplicate |
-| DELETE | `/api/issues/:id` | ✅ | admin | Delete issue |
+| Method | Endpoint                    | Auth | Role          | Description                        |
+| ------ | --------------------------- | ---- | ------------- | ---------------------------------- |
+| POST   | `/api/issues/create`        | ✅   | citizen       | Submit issue (multipart/form-data) |
+| GET    | `/api/issues/my`            | ✅   | citizen       | My submitted issues                |
+| GET    | `/api/issues/all`           | ✅   | admin         | All issues with filters            |
+| GET    | `/api/issues/block`         | ✅   | blockofficer  | Block issues                       |
+| PUT    | `/api/issues/:id/status`    | ✅   | officer/admin | Update status                      |
+| PUT    | `/api/issues/:id/duplicate` | ✅   | officer/admin | Toggle duplicate                   |
+| DELETE | `/api/issues/:id`           | ✅   | admin         | Delete issue                       |
 
 **POST /api/issues/create — Form-Data Fields:**
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `title` | text | ✅ | Min 5 chars |
-| `description` | text | ✅ | Min 20 chars |
-| `category` | text | ✅ | Enum value |
-| `priority` | text | ✅ | High / Medium / Low |
-| `address` | text | ✅ | Location |
-| `coordinates` | text | ❌ | Lat, Lng string |
-| `block` | text | ✅ | Block A–E |
-| `citizenContact` | text | ❌ | Email or phone |
-| `photo` | file | ❌ | Max 5MB, JPG/PNG/WEBP |
+| Field            | Type | Required | Notes                 |
+| ---------------- | ---- | -------- | --------------------- |
+| `title`          | text | ✅       | Min 5 chars           |
+| `description`    | text | ✅       | Min 20 chars          |
+| `category`       | text | ✅       | Enum value            |
+| `priority`       | text | ✅       | High / Medium / Low   |
+| `address`        | text | ✅       | Location              |
+| `coordinates`    | text | ❌       | Lat, Lng string       |
+| `block`          | text | ✅       | Block A–E             |
+| `citizenContact` | text | ❌       | Email or phone        |
+| `photo`          | file | ❌       | Max 5MB, JPG/PNG/WEBP |
 
 **GET /api/issues/all — Query Params:**
+
 ```
 ?block=Block A
 ?status=Reported|In Progress|Resolved
@@ -422,6 +435,7 @@ NODE_ENV=development
 ```
 
 **PUT /api/issues/:id/status — Body:**
+
 ```json
 { "status": "In Progress" }
 ```
@@ -430,20 +444,21 @@ NODE_ENV=development
 
 ### 8.3 Block Officer Routes — `/api/block`
 
-| Method | Endpoint | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/block/profile` | ✅ | blockofficer | Officer profile |
-| GET | `/api/block/issues` | ✅ | blockofficer | Block issues |
-| GET | `/api/block/analytics` | ✅ | blockofficer | Block analytics |
+| Method | Endpoint               | Auth | Role         | Description     |
+| ------ | ---------------------- | ---- | ------------ | --------------- |
+| GET    | `/api/block/profile`   | ✅   | blockofficer | Officer profile |
+| GET    | `/api/block/issues`    | ✅   | blockofficer | Block issues    |
+| GET    | `/api/block/analytics` | ✅   | blockofficer | Block analytics |
 
 **GET /api/block/analytics — Response:**
+
 ```json
 {
   "block": "Block A",
   "total": 42,
   "statusCounts": { "reported": 15, "inProgress": 18, "resolved": 9 },
   "byCategory": [{ "_id": "Road & Infrastructure", "count": 12 }],
-  "byPriority":  [{ "_id": "High", "count": 18 }]
+  "byPriority": [{ "_id": "High", "count": 18 }]
 }
 ```
 
@@ -451,17 +466,18 @@ NODE_ENV=development
 
 ### 8.4 Admin Routes — `/api/admin`
 
-| Method | Endpoint | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/admin/analytics` | ✅ | admin | Full platform analytics |
-| GET | `/api/admin/officers` | ✅ | admin | All block officers |
-| POST | `/api/admin/officers` | ✅ | admin | Create officer |
-| PUT | `/api/admin/officers/:id` | ✅ | admin | Update officer |
-| DELETE | `/api/admin/officers/:id` | ✅ | admin | Delete officer + user account |
-| GET | `/api/admin/citizens` | ✅ | admin | All citizens |
-| DELETE | `/api/admin/citizens/:id` | ✅ | admin | Delete citizen + their issues |
+| Method | Endpoint                  | Auth | Role  | Description                   |
+| ------ | ------------------------- | ---- | ----- | ----------------------------- |
+| GET    | `/api/admin/analytics`    | ✅   | admin | Full platform analytics       |
+| GET    | `/api/admin/officers`     | ✅   | admin | All block officers            |
+| POST   | `/api/admin/officers`     | ✅   | admin | Create officer                |
+| PUT    | `/api/admin/officers/:id` | ✅   | admin | Update officer                |
+| DELETE | `/api/admin/officers/:id` | ✅   | admin | Delete officer + user account |
+| GET    | `/api/admin/citizens`     | ✅   | admin | All citizens                  |
+| DELETE | `/api/admin/citizens/:id` | ✅   | admin | Delete citizen + their issues |
 
 **POST /api/admin/officers — Body:**
+
 ```json
 {
   "name": "Suresh Kumar",
@@ -473,6 +489,7 @@ NODE_ENV=development
 ```
 
 **GET /api/admin/analytics — Response:**
+
 ```json
 {
   "totalIssues": 156,
@@ -493,14 +510,15 @@ NODE_ENV=development
 
 ### 8.5 Notification Routes — `/api/notifications`
 
-| Method | Endpoint | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/notifications` | ✅ | Any | Get last 50 notifications |
-| PUT | `/api/notifications/read-all` | ✅ | Any | Mark all as read |
-| PUT | `/api/notifications/:id/read` | ✅ | Any | Mark one as read |
-| DELETE | `/api/notifications/:id` | ✅ | Any | Delete notification |
+| Method | Endpoint                      | Auth | Role | Description               |
+| ------ | ----------------------------- | ---- | ---- | ------------------------- |
+| GET    | `/api/notifications`          | ✅   | Any  | Get last 50 notifications |
+| PUT    | `/api/notifications/read-all` | ✅   | Any  | Mark all as read          |
+| PUT    | `/api/notifications/:id/read` | ✅   | Any  | Mark one as read          |
+| DELETE | `/api/notifications/:id`      | ✅   | Any  | Delete notification       |
 
 **GET /api/notifications — Response:**
+
 ```json
 {
   "notifications": [
@@ -522,6 +540,7 @@ NODE_ENV=development
 ## 9. Authentication & Security
 
 ### JWT Token Flow
+
 ```
 1. User POST /api/auth/login
 2. Server validates credentials (email + bcrypt password match)
@@ -533,11 +552,13 @@ NODE_ENV=development
 ```
 
 ### Password Security
+
 - Passwords stored as **bcrypt hash** (never plain text)
 - Salt rounds: **10**
 - Comparison: `bcrypt.compare(inputPassword, storedHash)`
 
 ### RBAC Middleware
+
 ```js
 protect      → any authenticated user (valid JWT)
 adminOnly    → role === 'admin'
@@ -550,6 +571,7 @@ citizenOnly  → role === 'citizen'
 ## 10. Frontend Architecture
 
 ### Routing Hierarchy
+
 ```
 / ──────────────────── LandingPage (public)
 /auth ──────────────── AuthPage (login/register — public)
@@ -571,16 +593,18 @@ citizenOnly  → role === 'citizen'
 ```
 
 ### Axios Instance (`src/api/axios.js`)
+
 - Base URL: `http://localhost:5000`
 - **Request Interceptor:** Auto-attaches `Authorization: Bearer <token>`
 - **Response Interceptor:** On 401 → clears `uv_token`, `uv_user`, `uv_role` from localStorage → redirects to `/auth`
 
 ### LocalStorage Keys
-| Key | Value |
-|---|---|
-| `uv_token` | JWT token string |
-| `uv_user` | JSON stringified user object |
-| `uv_role` | Role string: citizen / blockofficer / admin |
+
+| Key        | Value                                       |
+| ---------- | ------------------------------------------- |
+| `uv_token` | JWT token string                            |
+| `uv_user`  | JSON stringified user object                |
+| `uv_role`  | Role string: citizen / blockofficer / admin |
 
 ---
 
@@ -590,12 +614,14 @@ citizenOnly  → role === 'citizen'
 > Make sure MongoDB Atlas IP whitelist is set and `.env` is correctly configured before starting.
 
 ### Terminal 1 — Start Backend
+
 ```powershell
 cd "C:\Users\Admin\OneDrive\Desktop\URBAN ISSUE\server"
 npm run dev
 ```
 
 **Expected output:**
+
 ```
 [nodemon] starting `node server.js`
 MongoDB Connected Successfully: urbanissue.353lq55.mongodb.net
@@ -605,23 +631,27 @@ MongoDB Connected Successfully: urbanissue.353lq55.mongodb.net
 ```
 
 ### Terminal 2 — Start Frontend
+
 ```powershell
 cd "C:\Users\Admin\OneDrive\Desktop\URBAN ISSUE\client"
 npm run dev
 ```
 
 **Expected output:**
+
 ```
   VITE v5.x  ready in ~400ms
   ➜  Local:   http://localhost:5173/
 ```
 
 ### Open in Browser
+
 ```
 http://localhost:5173
 ```
 
 ### Quick MongoDB Connection Test
+
 ```powershell
 cd "C:\Users\Admin\OneDrive\Desktop\URBAN ISSUE\server"
 node -e "require('dotenv').config(); const m=require('mongoose'); m.connect(process.env.MONGO_URI).then(()=>{console.log('✅ Atlas Connected!');process.exit(0)}).catch(e=>{console.error('❌',e.message);process.exit(1)})"
@@ -632,103 +662,114 @@ node -e "require('dotenv').config(); const m=require('mongoose'); m.connect(proc
 ## 12. Postman Testing Guide
 
 ### Step 1 — Import Collection
+
 1. Open **Postman**
 2. Click **Import** (top-left)
 3. Import file: `UrbanVoice_API.postman_collection.json`
 
 ### Step 2 — Create Environment
+
 1. Click **Environments → +** (top-right)
 2. Name: `UrbanVoice Local`
 3. Add variables:
 
-| Variable | Initial Value |
-|---|---|
+| Variable  | Initial Value           |
+| --------- | ----------------------- |
 | `baseUrl` | `http://localhost:5000` |
-| `token` | *(paste after login)* |
+| `token`   | _(paste after login)_   |
 
 ### Step 3 — Test Scenarios
 
 #### 🔷 Scenario 1: Register & Login as Admin
+
 1. **Auth → Register — Admin** → Send → `201`
 2. Copy `token` from response → paste into `token` variable
 3. **Auth → Get My Profile** → Send → `200`
 
 #### 🔷 Scenario 2: Register & Login as Citizen
+
 1. **Auth → Register — Citizen** → Send → `201`
 2. Copy `token` → set in environment
 3. **Auth → Login — Citizen** → Send → `200`
 
 #### 🔷 Scenario 3: Submit an Issue (Citizen)
+
 1. Login as citizen, set token
 2. **Issues → Create Issue (no photo)** → Send → `201`
 3. Copy `_id` from response (this is your `ISSUE_ID`)
 
 #### 🔷 Scenario 4: Update Issue Status (Admin/Officer)
+
 1. Login as admin, set token
-2. **Issues → Update Issue Status** 
+2. **Issues → Update Issue Status**
 3. Replace `ISSUE_ID_HERE` in URL with the copied ID
 4. Body: `{ "status": "In Progress" }` → Send → `200`
 
 #### 🔷 Scenario 5: Check Citizen Notifications
+
 1. Login as citizen, set token
 2. **Notifications → Get My Notifications** → `200`
 3. Should see 2 notifications: submitted + status changed
 
 #### 🔷 Scenario 6: Mark Notifications as Read
+
 1. **Notifications → Mark ALL as Read** → `200`
 2. Re-run Get Notifications → `unreadCount` should be `0`
 
 #### 🔷 Scenario 7: Admin — Create Block Officer
+
 1. Login as admin
 2. **Admin → Create Block Officer** → Send → `201`
 3. Response includes both `officer` and `user` objects
 
 #### 🔷 Scenario 8: Get Full Analytics
+
 1. **Admin → Get Platform Analytics** → `200`
 2. Verify `totalIssues`, `statusCounts`, `byBlock`, `monthlyTrend`
 
 ### Common Postman Errors
 
-| Error | Cause | Fix |
-|---|---|---|
-| `401 Not authorized, no token provided` | Token missing | Set `{{token}}` env variable |
-| `403 Access denied. Admin only.` | Wrong role | Login with correct role |
-| `404 User not found` | Not registered | Register first |
-| `400 User already exists` | Duplicate email | Use different email |
-| `ECONNREFUSED` | Server not running | Run `npm run dev` in `/server` |
-| `500 Internal Server Error` | Atlas connection issue | Check IP whitelist in Atlas |
+| Error                                   | Cause                  | Fix                            |
+| --------------------------------------- | ---------------------- | ------------------------------ |
+| `401 Not authorized, no token provided` | Token missing          | Set `{{token}}` env variable   |
+| `403 Access denied. Admin only.`        | Wrong role             | Login with correct role        |
+| `404 User not found`                    | Not registered         | Register first                 |
+| `400 User already exists`               | Duplicate email        | Use different email            |
+| `ECONNREFUSED`                          | Server not running     | Run `npm run dev` in `/server` |
+| `500 Internal Server Error`             | Atlas connection issue | Check IP whitelist in Atlas    |
 
 ---
 
 ## 13. User Roles & Permissions Matrix
 
-| Feature | Citizen | Block Officer | Admin |
-|---|---|---|---|
-| Register/Login | ✅ | ✅ (login only) | ✅ |
-| View own profile | ✅ | ✅ | ✅ |
-| Update own profile | ✅ | ✅ | ✅ |
-| Change password | ✅ | ✅ | ✅ |
-| Submit issues | ✅ | ❌ | ❌ |
-| View own issues | ✅ | ❌ | ❌ |
-| View block issues | ❌ | ✅ | ✅ |
-| View ALL issues | ❌ | ❌ | ✅ |
-| Update issue status | ❌ | ✅ | ✅ |
-| Flag duplicate | ❌ | ✅ | ✅ |
-| Delete issue | ❌ | ❌ | ✅ |
-| View block analytics | ❌ | ✅ | ✅ |
-| View platform analytics | ❌ | ❌ | ✅ |
-| Create officers | ❌ | ❌ | ✅ |
-| Update officers | ❌ | ❌ | ✅ |
-| Delete officers | ❌ | ❌ | ✅ |
-| View all citizens | ❌ | ❌ | ✅ |
-| Delete citizens | ❌ | ❌ | ✅ |
-| Receive notifications | ✅ | ❌ | ✅ |
+| Feature                 | Citizen | Block Officer   | Admin |
+| ----------------------- | ------- | --------------- | ----- |
+| Register/Login          | ✅      | ✅ (login only) | ✅    |
+| View own profile        | ✅      | ✅              | ✅    |
+| Update own profile      | ✅      | ✅              | ✅    |
+| Change password         | ✅      | ✅              | ✅    |
+| Submit issues           | ✅      | ❌              | ❌    |
+| View own issues         | ✅      | ❌              | ❌    |
+| View block issues       | ❌      | ✅              | ✅    |
+| View ALL issues         | ❌      | ❌              | ✅    |
+| Update issue status     | ❌      | ✅              | ✅    |
+| Flag duplicate          | ❌      | ✅              | ✅    |
+| Delete issue            | ❌      | ❌              | ✅    |
+| View block analytics    | ❌      | ✅              | ✅    |
+| View platform analytics | ❌      | ❌              | ✅    |
+| Create officers         | ❌      | ❌              | ✅    |
+| Update officers         | ❌      | ❌              | ✅    |
+| Delete officers         | ❌      | ❌              | ✅    |
+| View all citizens       | ❌      | ❌              | ✅    |
+| Delete citizens         | ❌      | ❌              | ✅    |
+| Receive notifications   | ✅      | ❌              | ✅    |
 
 ---
 
 ## 14. Feature Breakdown
 
 ### Issue Lifecycle
+
 ```
 Citizen submits issue
        ↓
@@ -743,15 +784,16 @@ Officer resolves → Status: "Resolved"
 
 ### Automated Notifications (5 triggers)
 
-| Trigger | Message |
-|---|---|
-| Issue submitted | "Your issue \"X\" has been submitted and is pending review." |
-| Status → In Progress | "Your issue \"X\" is now being worked on." |
-| Status → Resolved | "Your issue \"X\" has been marked as Resolved. ✅" |
-| Duplicate flagged | "Your issue \"X\" has been flagged as a duplicate." |
-| Duplicate removed | "Duplicate flag removed from your issue \"X\"." |
+| Trigger              | Message                                                      |
+| -------------------- | ------------------------------------------------------------ |
+| Issue submitted      | "Your issue \"X\" has been submitted and is pending review." |
+| Status → In Progress | "Your issue \"X\" is now being worked on."                   |
+| Status → Resolved    | "Your issue \"X\" has been marked as Resolved. ✅"           |
+| Duplicate flagged    | "Your issue \"X\" has been flagged as a duplicate."          |
+| Duplicate removed    | "Duplicate flag removed from your issue \"X\"."              |
 
 ### Photo Upload Details
+
 - Endpoint: `POST /api/issues/create` (multipart/form-data)
 - Field name: `photo`
 - Accepted MIME: `image/jpeg`, `image/jpg`, `image/png`, `image/webp`
@@ -763,21 +805,22 @@ Officer resolves → Status: "Resolved"
 
 ## 15. API Error Codes Table
 
-| HTTP Code | Meaning | Common Causes |
-|---|---|---|
-| `200` | OK | Successful GET / PUT / DELETE |
-| `201` | Created | Successful POST (register, create issue, create officer) |
-| `400` | Bad Request | Missing fields, invalid status value, duplicate email |
-| `401` | Unauthorized | No token, expired token, wrong password |
-| `403` | Forbidden | Valid token but wrong role |
-| `404` | Not Found | User / Issue / Officer ID doesn't exist |
-| `500` | Internal Server Error | DB error, Mongoose validation, unhandled exception |
+| HTTP Code | Meaning               | Common Causes                                            |
+| --------- | --------------------- | -------------------------------------------------------- |
+| `200`     | OK                    | Successful GET / PUT / DELETE                            |
+| `201`     | Created               | Successful POST (register, create issue, create officer) |
+| `400`     | Bad Request           | Missing fields, invalid status value, duplicate email    |
+| `401`     | Unauthorized          | No token, expired token, wrong password                  |
+| `403`     | Forbidden             | Valid token but wrong role                               |
+| `404`     | Not Found             | User / Issue / Officer ID doesn't exist                  |
+| `500`     | Internal Server Error | DB error, Mongoose validation, unhandled exception       |
 
 ---
 
 ## 16. Workflow Diagrams
 
 ### Registration Flow
+
 ```
 POST /api/auth/register
          ↓
@@ -799,6 +842,7 @@ POST /api/auth/register
 ```
 
 ### Issue Submission Flow
+
 ```
 Citizen fills ReportIssue form
          ↓
@@ -819,6 +863,7 @@ POST /api/issues/create (multipart/form-data)
 ```
 
 ### Status Update Flow
+
 ```
 Officer/Admin clicks status change
          ↓
@@ -845,6 +890,7 @@ PUT /api/issues/:id/status { "status": "Resolved" }
 ## Appendix — Quick Reference
 
 ### Start Commands
+
 ```powershell
 # Backend (Terminal 1)
 cd "C:\Users\Admin\OneDrive\Desktop\URBAN ISSUE\server"
@@ -856,6 +902,7 @@ npm run dev
 ```
 
 ### Install Dependencies (first time)
+
 ```powershell
 cd server && npm install
 cd ..\client && npm install
@@ -898,4 +945,4 @@ DELETE /api/notifications/:id
 
 ---
 
-*UrbanVoice Platform v1.0.0 — April 2026*
+_UrbanVoice Platform v1.0.0 — April 2026_
