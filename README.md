@@ -62,7 +62,7 @@ Error: `npm not recognized`
 
   Solution : Install Node.js
 
-Error: Project not running
+
 
  
 
