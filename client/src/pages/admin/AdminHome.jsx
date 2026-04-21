@@ -8,7 +8,7 @@ export default function AdminHome({ issues }) {
   const resolved   = issues.filter(i => i.status === 'Resolved').length
   const high       = issues.filter(i => i.priority === 'High').length
 
-  const recent = [...issues].sort((a,b) => new Date(b.reportedOn) - new Date(a.reportedOn)).slice(0,6)
+  const recent = [...issues].sort((a,b) => new Date(b.reportedOn || b.createdAt) - new Date(a.reportedOn || a.createdAt)).slice(0,6)
 
   // Block summary
   const blockMap = {}
@@ -66,7 +66,7 @@ export default function AdminHome({ issues }) {
           <div className="panel-header"><h3>Recent Issues</h3><p>Latest across all blocks</p></div>
           <div style={{ padding:'0 20px 20px' }}>
             {recent.map(issue => (
-              <div key={issue.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 0', borderBottom:'1px solid var(--border-solid)', gap:12 }}>
+              <div key={issue._id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 0', borderBottom:'1px solid var(--border-solid)', gap:12 }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontWeight:600, fontSize:'0.88rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{issue.title}</div>
                   <div style={{ fontSize:'0.76rem', color:'var(--text-light)', marginTop:2 }}>{issue.block} · {issue.category} · {issue.reportedOn}</div>

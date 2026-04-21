@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../../components/Sidebar'
 import AdminHome      from './AdminHome'
 import AdminIssues    from './AdminIssues'
 import AdminOfficers  from './AdminOfficers'
 import AdminAnalytics from './AdminAnalytics'
-import { initialIssues } from '../../data/mockData'
+import NotificationBell from '../../components/NotificationBell'
+import API from '../../api/axios'
 import './admin.css'
 
 const NAV = [
@@ -15,21 +16,60 @@ const NAV = [
 ]
 
 export default function AdminDashboard() {
-  const [issues, setIssues] = useState(initialIssues)
+  const [issues, setIssues] = useState([])
   const [view, setView]     = useState('home')
+  const [loading, setLoading] = useState(true)
 
-  function resolveIssue(id) {
-    setIssues(prev => prev.map(i => i.id === id ? { ...i, status:'Resolved' } : i))
+  // Fetch all issues from backend
+  async function fetchIssues() {
+    try {
+      setLoading(true)
+      const { data } = await API.get('/api/issues/all')
+      setIssues(data)
+    } catch (err) {
+      console.error('Failed to fetch issues:', err)
+    } finally {
+      setLoading(false)
+    }
   }
-  function deleteIssue(id) {
-    setIssues(prev => prev.filter(i => i.id !== id))
+
+  useEffect(() => {
+    fetchIssues()
+  }, [])
+
+  // Resolve issue via API
+  async function resolveIssue(id) {
+    try {
+      await API.put(`/api/issues/${id}/status`, { status: 'Resolved' })
+      setIssues(prev => prev.map(i => i._id === id ? { ...i, status:'Resolved' } : i))
+    } catch (err) {
+      console.error('Resolve failed:', err)
+    }
   }
-  function updateStatus(id, status) {
-    setIssues(prev => prev.map(i => i.id === id ? { ...i, status } : i))
+
+  // Delete issue via API
+  async function deleteIssue(id) {
+    try {
+      await API.delete(`/api/issues/${id}`)
+      setIssues(prev => prev.filter(i => i._id !== id))
+    } catch (err) {
+      console.error('Delete failed:', err)
+      alert(err.response?.data?.message || 'Failed to delete issue')
+    }
+  }
+
+  // Update status via API
+  async function updateStatus(id, status) {
+    try {
+      await API.put(`/api/issues/${id}/status`, { status })
+      setIssues(prev => prev.map(i => i._id === id ? { ...i, status } : i))
+    } catch (err) {
+      console.error('Status update failed:', err)
+    }
   }
 
   const views = {
-    home:      <AdminHome      issues={issues} />,
+    home:      <AdminHome      issues={issues} loading={loading} />,
     issues:    <AdminIssues    issues={issues} onResolve={resolveIssue} onDelete={deleteIssue} onStatus={updateStatus} />,
     officers:  <AdminOfficers />,
     analytics: <AdminAnalytics issues={issues} />,
@@ -52,6 +92,7 @@ export default function AdminDashboard() {
             <div className="top-bar-sub">UrbanVoice Admin Control Panel</div>
           </div>
           <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+            <NotificationBell />
             <div className="admin-topbar-badge">🛡 Admin</div>
           </div>
         </div>

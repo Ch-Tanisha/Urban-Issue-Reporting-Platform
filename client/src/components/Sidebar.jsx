@@ -11,6 +11,7 @@ export default function Sidebar({ role, navItems, activeView, onNav, userName, u
   const navigate = useNavigate()
 
   function handleLogout() {
+    localStorage.removeItem('uv_token')
     localStorage.removeItem('uv_role')
     localStorage.removeItem('uv_user')
     navigate('/auth')

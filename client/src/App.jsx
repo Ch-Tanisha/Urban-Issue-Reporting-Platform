@@ -6,8 +6,11 @@ import OfficerDashboard   from './pages/blockofficer/OfficerDashboard'
 import AdminDashboard     from './pages/admin/AdminDashboard'
 
 function ProtectedRoute({ children, role }) {
+  const token = localStorage.getItem('uv_token')
   const stored = localStorage.getItem('uv_role')
-  if (!stored || stored !== role) return <Navigate to="/auth" replace />
+  // Normalize: backend 'blockofficer' is stored as 'officer' in frontend
+  const normalizedStored = stored === 'blockofficer' ? 'officer' : stored
+  if (!token || !normalizedStored || normalizedStored !== role) return <Navigate to="/auth" replace />
   return children
 }
 

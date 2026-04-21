@@ -19,7 +19,7 @@ export default function OfficerMyIssues({ issues, officer, onStatusChange }) {
       ) : (
         <div className="officer-cards-grid">
           {active.map(issue => (
-            <div key={issue.id} className="officer-issue-card">
+            <div key={issue._id} className="officer-issue-card">
               <div className="officer-issue-card-top">
                 <StatusBadge value={issue.status} type="status" />
                 <StatusBadge value={issue.priority} type="priority" />
@@ -27,7 +27,7 @@ export default function OfficerMyIssues({ issues, officer, onStatusChange }) {
               <h4 className="officer-issue-title">{issue.title}</h4>
               <p className="officer-issue-cat">{issue.category}</p>
               <p className="officer-issue-addr">📍 {issue.address}</p>
-              <p className="officer-issue-date">Reported: {issue.reportedOn}</p>
+              <p className="officer-issue-date">Reported: {issue.reportedOn || new Date(issue.createdAt).toLocaleDateString()}</p>
               <div style={{ marginTop:12, borderTop:'1px solid var(--off-border)', paddingTop:12 }}>
                 <p style={{ fontSize:'0.75rem', fontWeight:600, color:'var(--off-muted)', marginBottom:6, textTransform:'uppercase' }}>Citizen Info</p>
                 <p style={{ fontSize:'0.85rem', fontWeight:600 }}>{issue.citizenName}</p>
@@ -37,7 +37,7 @@ export default function OfficerMyIssues({ issues, officer, onStatusChange }) {
               <div style={{ marginTop:12 }}>
                 <select
                   value={issue.status}
-                  onChange={e => onStatusChange(issue.id, e.target.value)}
+                  onChange={e => onStatusChange(issue._id, e.target.value)}
                   className="officer-status-select"
                   style={{ width:'100%', borderColor:'var(--off-border)' }}
                 >

@@ -1,0 +1,421 @@
+{
+  "info": {
+    "name": "UrbanVoice — Urban Issue Reporting Platform API",
+    "_postman_id": "urbanvoice-api-collection-2024",
+    "description": "Complete REST API collection for the Urban Issue Reporting Platform. Base URL: http://localhost:5000\n\nRoles: citizen | blockofficer | admin\n\nAuthentication: Bearer JWT token in Authorization header.\nAfter login/register, copy the token from the response and set it as {{token}} in your environment variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000", "type": "string" },
+    { "key": "token",   "value": "YOUR_JWT_TOKEN_HERE",    "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register — Citizen",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya Sharma\",\n  \"email\": \"priya@example.com\",\n  \"password\": \"citizen123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"citizen\",\n  \"age\": 28,\n  \"gender\": \"Female\",\n  \"address\": \"12 Gandhi Nagar\",\n  \"city\": \"Pune\",\n  \"pincode\": \"411001\",\n  \"block\": \"Block A\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register — Block Officer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Patil\",\n  \"email\": \"rahul.officer@example.com\",\n  \"password\": \"officer123\",\n  \"phone\": \"9123456789\",\n  \"role\": \"blockofficer\",\n  \"block\": \"Block A\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register — Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@urbanvoice.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Citizen",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"priya@example.com\",\n  \"password\": \"citizen123\",\n  \"role\": \"citizen\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Block Officer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rahul.officer@example.com\",\n  \"password\": \"officer123\",\n  \"role\": \"officer\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@urbanvoice.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile (GET /me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/profile", "host": ["{{baseUrl}}"], "path": ["api", "auth", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya Sharma Updated\",\n  \"phone\": \"9999999999\",\n  \"address\": \"45 Nehru Road\",\n  \"city\": \"Pune\",\n  \"pincode\": \"411002\",\n  \"block\": \"Block B\",\n  \"age\": 29,\n  \"gender\": \"Female\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/password", "host": ["{{baseUrl}}"], "path": ["api", "auth", "password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"citizen123\",\n  \"newPassword\": \"newpass456\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏗️ Issues",
+      "item": [
+        {
+          "name": "Create Issue (with photo) — Citizen",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/issues/create", "host": ["{{baseUrl}}"], "path": ["api", "issues", "create"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title",          "value": "Large pothole on Main Road",       "type": "text" },
+                { "key": "description",    "value": "There is a large pothole near the market crossing causing accidents and traffic jams every morning.", "type": "text" },
+                { "key": "category",       "value": "Road & Infrastructure",            "type": "text" },
+                { "key": "priority",       "value": "High",                             "type": "text" },
+                { "key": "address",        "value": "Main Road, Near Market, Block A",  "type": "text" },
+                { "key": "coordinates",    "value": "18.5204, 73.8567",                 "type": "text" },
+                { "key": "block",          "value": "Block A",                          "type": "text" },
+                { "key": "citizenContact", "value": "priya@example.com",               "type": "text" },
+                { "key": "photo",          "type": "file", "src": "" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Issue (no photo) — Citizen",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/issues/create", "host": ["{{baseUrl}}"], "path": ["api", "issues", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Broken street light on Park Road\",\n  \"description\": \"The street light near the park entrance has been broken for 2 weeks causing safety issues for pedestrians.\",\n  \"category\": \"Electricity & Lighting\",\n  \"priority\": \"Medium\",\n  \"address\": \"Park Road, Block B\",\n  \"coordinates\": \"18.5300, 73.8450\",\n  \"block\": \"Block B\",\n  \"citizenContact\": \"priya@example.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Issues — Citizen",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/issues/my", "host": ["{{baseUrl}}"], "path": ["api", "issues", "my"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Issues — Admin (with filters)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/issues/all?block=Block A&status=Reported&category=Road %26 Infrastructure&priority=High",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "issues", "all"],
+              "query": [
+                { "key": "block",    "value": "Block A" },
+                { "key": "status",   "value": "Reported" },
+                { "key": "category", "value": "Road & Infrastructure" },
+                { "key": "priority", "value": "High" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Block Issues — Officer",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/issues/block", "host": ["{{baseUrl}}"], "path": ["api", "issues", "block"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Issue Status — Officer/Admin",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/issues/ISSUE_ID_HERE/status", "host": ["{{baseUrl}}"], "path": ["api", "issues", "ISSUE_ID_HERE", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Duplicate Flag — Officer/Admin",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/issues/ISSUE_ID_HERE/duplicate", "host": ["{{baseUrl}}"], "path": ["api", "issues", "ISSUE_ID_HERE", "duplicate"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Issue — Admin",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/issues/ISSUE_ID_HERE", "host": ["{{baseUrl}}"], "path": ["api", "issues", "ISSUE_ID_HERE"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👮 Block Officer",
+      "item": [
+        {
+          "name": "Get Officer Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/block/profile", "host": ["{{baseUrl}}"], "path": ["api", "block", "profile"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Assigned Block Issues",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/block/issues", "host": ["{{baseUrl}}"], "path": ["api", "block", "issues"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Block Analytics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/block/analytics", "host": ["{{baseUrl}}"], "path": ["api", "block", "analytics"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛡️ Admin",
+      "item": [
+        {
+          "name": "Get Platform Analytics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/analytics", "host": ["{{baseUrl}}"], "path": ["api", "admin", "analytics"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Block Officers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/officers", "host": ["{{baseUrl}}"], "path": ["api", "admin", "officers"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Block Officer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/officers", "host": ["{{baseUrl}}"], "path": ["api", "admin", "officers"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Suresh Kumar\",\n  \"email\": \"suresh.officer@urbanvoice.com\",\n  \"password\": \"officer@123\",\n  \"phone\": \"9876001234\",\n  \"assignedBlock\": \"Block C\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Block Officer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/officers/OFFICER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["api", "admin", "officers", "OFFICER_ID_HERE"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9000000001\",\n  \"assignedBlock\": \"Block D\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Block Officer",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/officers/OFFICER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["api", "admin", "officers", "OFFICER_ID_HERE"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Citizens",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/citizens", "host": ["{{baseUrl}}"], "path": ["api", "admin", "citizens"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Citizen",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/citizens/CITIZEN_ID_HERE", "host": ["{{baseUrl}}"], "path": ["api", "admin", "citizens", "CITIZEN_ID_HERE"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔔 Notifications",
+      "item": [
+        {
+          "name": "Get My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/notifications", "host": ["{{baseUrl}}"], "path": ["api", "notifications"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Single Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/notifications/NOTIFICATION_ID_HERE/read", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "NOTIFICATION_ID_HERE", "read"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark ALL Notifications as Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "read-all"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/notifications/NOTIFICATION_ID_HERE", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "NOTIFICATION_ID_HERE"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "❤️ Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,10 @@
 import { useState, useRef } from 'react'
-import { blocks, categories } from '../../data/mockData'
+
+const blocks = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E']
+const categories = [
+  'Road & Infrastructure', 'Garbage & Sanitation', 'Water Supply',
+  'Electricity & Lighting', 'Public Safety', 'Drainage', 'Other'
+]
 
 export default function ReportIssue({ onSubmit, onCancel, citizen }) {
   const [form, setForm] = useState({

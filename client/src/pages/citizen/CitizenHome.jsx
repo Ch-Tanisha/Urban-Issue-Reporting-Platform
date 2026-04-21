@@ -1,20 +1,13 @@
 import StatCard from '../../components/StatCard'
 import StatusBadge from '../../components/StatusBadge'
-import { officers } from '../../data/mockData'
 
-export default function CitizenHome({ issues, onNav, citizen }) {
+export default function CitizenHome({ issues, onNav, citizen, loading }) {
   const total      = issues.length
   const pending    = issues.filter(i => i.status === 'Reported').length
   const inProgress = issues.filter(i => i.status === 'In Progress').length
   const resolved   = issues.filter(i => i.status === 'Resolved').length
 
-  const recentIssues = [...issues].sort((a,b) => new Date(b.reportedOn) - new Date(a.reportedOn)).slice(0,5)
-
-  const myOfficer = officers.find(o => o.block === citizen.block)
-
-  // Category breakdown
-  const catMap = {}
-  issues.forEach(i => { catMap[i.category] = (catMap[i.category]||0)+1 })
+  const recentIssues = [...issues].sort((a,b) => new Date(b.reportedOn || b.createdAt) - new Date(a.reportedOn || a.createdAt)).slice(0,5)
 
   return (
     <div className="citizen-home">
@@ -79,23 +72,22 @@ export default function CitizenHome({ issues, onNav, citizen }) {
           </div>
         </div>
 
-        {/* Block Officer Contact */}
-        {myOfficer && (
-          <div className="panel officer-contact-card">
-            <div className="panel-header"><div><h3>Your Block Officer</h3><p>Assigned to {citizen.block}</p></div></div>
-            <div className="panel-body">
-              <div className="officer-contact-inner">
-                <div className="officer-avatar-lg">{myOfficer.avatar}</div>
-                <div>
-                  <div className="officer-name">{myOfficer.name}</div>
-                  <div className="officer-block">{myOfficer.block}</div>
-                  <a href={`mailto:${myOfficer.email}`} className="officer-contact-link">✉ {myOfficer.email}</a>
-                  <a href={`tel:${myOfficer.phone}`}    className="officer-contact-link">📞 {myOfficer.phone}</a>
-                </div>
+        {/* Your Block Info */}
+        <div className="panel officer-contact-card">
+          <div className="panel-header"><div><h3>Your Block</h3><p>Assigned area information</p></div></div>
+          <div className="panel-body">
+            <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+              <div className="officer-avatar-lg" style={{ background:'var(--gradient)', color:'white' }}>
+                {citizen.block?.replace('Block ', '') || '?'}
+              </div>
+              <div>
+                <div className="officer-name">{citizen.block}</div>
+                <div className="officer-block" style={{ fontSize:'0.82rem', color:'var(--text-light)' }}>{citizen.address || 'Address not set'}</div>
+                <div style={{ fontSize:'0.78rem', color:'var(--text-light)', marginTop:4 }}>{citizen.city || ''}</div>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Recent Activity */}
@@ -104,15 +96,17 @@ export default function CitizenHome({ issues, onNav, citizen }) {
           <div><h3>Recent Activity</h3><p>Your last {recentIssues.length} submissions.</p></div>
           <button className="btn-ghost btn-sm" onClick={() => onNav('reports')}>View All</button>
         </div>
-        {recentIssues.length === 0 ? (
+        {loading ? (
+          <div className="empty-state"><p>⏳ Loading your reports…</p></div>
+        ) : recentIssues.length === 0 ? (
           <div className="empty-state"><div className="empty-icon">📭</div><p>No reports yet. Create your first issue!</p></div>
         ) : (
           <div style={{ padding:'0 20px 20px' }}>
             {recentIssues.map(issue => (
-              <div key={issue.id} className="recent-report-row">
+              <div key={issue._id} className="recent-report-row">
                 <div className="recent-report-info">
                   <div className="recent-report-title">{issue.title}</div>
-                  <div className="recent-report-meta">{issue.category} · {issue.reportedOn}</div>
+                  <div className="recent-report-meta">{issue.category} · {issue.reportedOn || new Date(issue.createdAt).toLocaleDateString()}</div>
                 </div>
                 <StatusBadge value={issue.status} type="status" />
               </div>

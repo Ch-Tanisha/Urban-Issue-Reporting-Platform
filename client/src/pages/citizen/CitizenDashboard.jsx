@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
 import CitizenHome    from './CitizenHome'
 import ReportIssue   from './ReportIssue'
 import MyReports      from './MyReports'
 import CitizenProfile from './CitizenProfile'
-import { initialIssues, currentCitizen } from '../../data/mockData'
+import NotificationBell from '../../components/NotificationBell'
+import API from '../../api/axios'
 import '../citizen/citizen.css'
 
 const NAV = [
@@ -18,33 +19,76 @@ const NAV = [
 export default function CitizenDashboard() {
   const navigate = useNavigate()
   const [view, setView] = useState('home')
-  const [issues, setIssues] = useState(
-    initialIssues.filter(i => i.citizenName === 'Rahul Sharma')
-      .concat([
-        { ...initialIssues[1], id: 99, citizenName:'Raj Sharma' },
-        { ...initialIssues[3], id: 98, citizenName:'Raj Sharma' },
-      ])
-  )
+  const [issues, setIssues] = useState([])
+  const [loading, setLoading] = useState(true)
+
   const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
-  const citizen = { ...currentCitizen, name: stored.name || currentCitizen.name, email: stored.email || currentCitizen.email }
-
-  function addIssue(issue) {
-    setIssues(prev => [{ ...issue, id: Date.now(), status:'Reported', reportedOn: new Date().toISOString().split('T')[0], citizenName: citizen.name, citizenContact: citizen.email, citizenPhone: citizen.phone, isDuplicate: false }, ...prev])
-    setView('reports')
+  const citizen = {
+    name: stored.name || 'Citizen',
+    email: stored.email || '',
+    phone: stored.phone || '',
+    address: stored.address || '',
+    city: stored.city || '',
+    zip: stored.pincode || '',
+    block: stored.block || 'Block A',
+    id: stored.id || ''
   }
 
-  function updateIssue(id, data) {
-    setIssues(prev => prev.map(i => i.id === id ? { ...i, ...data } : i))
+  // Fetch citizen's issues from backend
+  async function fetchIssues() {
+    try {
+      setLoading(true)
+      const { data } = await API.get('/api/issues/my')
+      setIssues(data)
+    } catch (err) {
+      console.error('Failed to fetch issues:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
+  useEffect(() => {
+    fetchIssues()
+  }, [])
+
+  // Create a new issue via API
+  async function addIssue(formData) {
+    try {
+      const fd = new FormData()
+      fd.append('title', formData.title)
+      fd.append('description', formData.description)
+      fd.append('category', formData.category)
+      fd.append('priority', formData.priority)
+      fd.append('address', formData.address)
+      fd.append('coordinates', formData.coordinates || '')
+      fd.append('block', formData.block)
+      fd.append('citizenContact', citizen.email)
+      if (formData.image) {
+        fd.append('photo', formData.image)
+      }
+
+      await API.post('/api/issues/create', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      // Refresh issues list
+      await fetchIssues()
+      setView('reports')
+    } catch (err) {
+      console.error('Failed to create issue:', err)
+      alert(err.response?.data?.message || 'Failed to create issue. Please try again.')
+    }
+  }
+
+  // Delete issue (citizen can delete their own — routed through admin endpoint or handled locally)
   function deleteIssue(id) {
-    setIssues(prev => prev.filter(i => i.id !== id))
+    setIssues(prev => prev.filter(i => i._id !== id))
   }
 
   const views = {
-    home:    <CitizenHome    issues={issues} onNav={setView} citizen={citizen} />,
+    home:    <CitizenHome    issues={issues} onNav={setView} citizen={citizen} loading={loading} />,
     report:  <ReportIssue   onSubmit={addIssue} onCancel={() => setView('home')} citizen={citizen} />,
-    reports: <MyReports     issues={issues} onEdit={(id,d) => updateIssue(id,d)} onDelete={deleteIssue} onNew={() => setView('report')} />,
+    reports: <MyReports     issues={issues} onDelete={deleteIssue} onNew={() => setView('report')} onRefresh={fetchIssues} />,
     profile: <CitizenProfile citizen={citizen} />,
   }
 
@@ -64,7 +108,10 @@ export default function CitizenDashboard() {
             <div className="top-bar-title">{NAV.find(n=>n.view===view)?.label}</div>
             <div className="top-bar-sub">UrbanVoice Citizen Portal</div>
           </div>
-          <button className="btn-primary btn-sm" onClick={() => setView('report')}>+ New Report</button>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <NotificationBell />
+            <button className="btn-primary btn-sm" onClick={() => setView('report')}>+ New Report</button>
+          </div>
         </div>
         <div className="page-content animate-fadeIn">
           {views[view]}

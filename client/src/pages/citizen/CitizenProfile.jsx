@@ -1,18 +1,35 @@
-import { useState } from 'react'
-import { blocks, officers } from '../../data/mockData'
+import { useState, useEffect } from 'react'
+import { blocks } from '../../data/mockData'
+import API from '../../api/axios'
 
 export default function CitizenProfile({ citizen }) {
-  const [form, setForm] = useState({ ...citizen })
-  const [editing, setEditing]  = useState(false)
-  const [saved,   setSaved]    = useState(false)
-  const [errors,  setErrors]   = useState({})
+  const [form, setForm]       = useState({ ...citizen })
+  const [editing, setEditing] = useState(false)
+  const [saved,   setSaved]   = useState(false)
+  const [errors,  setErrors]  = useState({})
+  const [saving,  setSaving]  = useState(false)
+  const [saveErr, setSaveErr] = useState('')
+  const [officer, setOfficer] = useState(null)
 
-  const myOfficer = officers.find(o => o.block === form.block)
+  // Fetch the block officer assigned to citizen's block
+  useEffect(() => {
+    async function fetchOfficer() {
+      try {
+        const { data } = await API.get('/api/admin/officers')
+        const match = data.find(o => o.assignedBlock === (form.block || citizen.block))
+        setOfficer(match || null)
+      } catch (err) {
+        // Not critical — officer section just won't show
+      }
+    }
+    fetchOfficer()
+  }, [form.block, citizen.block])
 
   const set = (field) => (e) => {
     setForm(prev => ({ ...prev, [field]: e.target.value }))
     setErrors(prev => ({ ...prev, [field]: undefined }))
     setSaved(false)
+    setSaveErr('')
   }
 
   function validate() {
@@ -22,17 +39,37 @@ export default function CitizenProfile({ citizen }) {
     if (form.phone.trim().length < 10) errs.phone = 'Min 10 digits'
     if (form.address.trim().length < 5) errs.address = 'Required'
     if (form.city.trim().length < 2)   errs.city  = 'Required'
-    if (!/^\d{4,10}$/.test(form.zip)) errs.zip   = 'Invalid pin/zip'
+    if (!/^\d{4,10}$/.test(form.zip || '')) errs.zip = 'Invalid pin/zip'
     return errs
   }
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault()
     const errs = validate()
     setErrors(errs)
     if (Object.keys(errs).length) return
-    setEditing(false)
-    setSaved(true)
+
+    setSaving(true)
+    setSaveErr('')
+    try {
+      const { data } = await API.put('/api/auth/profile', {
+        name:    form.name,
+        phone:   form.phone,
+        address: form.address,
+        city:    form.city,
+        pincode: form.zip,
+        block:   form.block,
+      })
+      // Update localStorage with latest user info
+      const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
+      localStorage.setItem('uv_user', JSON.stringify({ ...stored, ...data }))
+      setEditing(false)
+      setSaved(true)
+    } catch (err) {
+      setSaveErr(err.response?.data?.message || 'Failed to save profile. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -49,6 +86,11 @@ export default function CitizenProfile({ citizen }) {
       {saved && (
         <div style={{ background:'var(--status-resolved-bg)', color:'var(--status-resolved-text)', padding:'12px 20px', borderRadius:'var(--radius-sm)', marginBottom:20, fontWeight:600, fontSize:'0.9rem' }}>
           ✅ Profile saved successfully!
+        </div>
+      )}
+      {saveErr && (
+        <div style={{ background:'#fef2f2', color:'#dc2626', padding:'12px 20px', borderRadius:'var(--radius-sm)', marginBottom:20, fontWeight:600, fontSize:'0.9rem' }}>
+          ⚠️ {saveErr}
         </div>
       )}
 
@@ -79,9 +121,8 @@ export default function CitizenProfile({ citizen }) {
                   {errors.name && <span className="field-error">{errors.name}</span>}
                 </div>
                 <div className="form-group">
-                  <label>Email</label>
-                  <input type="email" value={form.email}  onChange={set('email')}   disabled={!editing} className={errors.email ? 'error':''} />
-                  {errors.email && <span className="field-error">{errors.email}</span>}
+                  <label>Email <span style={{ color:'var(--text-muted)', fontWeight:400 }}>(read-only)</span></label>
+                  <input type="email" value={form.email} disabled style={{ opacity:0.7, cursor:'not-allowed' }} />
                 </div>
                 <div className="form-group">
                   <label>Phone</label>
@@ -116,8 +157,10 @@ export default function CitizenProfile({ citizen }) {
               </div>
               {editing && (
                 <div style={{ display:'flex', gap:12, marginTop:16 }}>
-                  <button type="submit" className="btn-primary">💾 Save Changes</button>
-                  <button type="button" className="btn-ghost" onClick={() => { setEditing(false); setForm({...citizen}); setErrors({}) }}>Cancel</button>
+                  <button type="submit" className="btn-primary" disabled={saving}>
+                    {saving ? '⏳ Saving…' : '💾 Save Changes'}
+                  </button>
+                  <button type="button" className="btn-ghost" onClick={() => { setEditing(false); setForm({...citizen}); setErrors({}); setSaveErr('') }}>Cancel</button>
                 </div>
               )}
             </form>
@@ -125,22 +168,24 @@ export default function CitizenProfile({ citizen }) {
         </div>
       </div>
 
-      {/* Block Officer Contact */}
-      {myOfficer && (
+      {/* Block Officer Contact — fetched from backend */}
+      {officer && (
         <div className="panel" style={{ marginTop:24 }}>
           <div className="panel-header"><h3>📞 Your Assigned Block Officer</h3></div>
           <div className="panel-body">
             <div className="officer-contact-inner">
-              <div className="officer-avatar-lg">{myOfficer.avatar}</div>
+              <div className="officer-avatar-lg">
+                {officer.avatar || (officer.name || 'OF').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+              </div>
               <div>
-                <div className="officer-name">{myOfficer.name}</div>
-                <div className="officer-block">{myOfficer.block}</div>
+                <div className="officer-name">{officer.name}</div>
+                <div className="officer-block">{officer.assignedBlock}</div>
                 <div style={{ display:'flex', gap:16, marginTop:10, flexWrap:'wrap' }}>
-                  <a href={`mailto:${myOfficer.email}`} className="officer-contact-link btn-ghost btn-sm">✉ Email</a>
-                  <a href={`tel:${myOfficer.phone}`}    className="officer-contact-link btn-ghost btn-sm">📞 Call</a>
+                  <a href={`mailto:${officer.email}`} className="officer-contact-link btn-ghost btn-sm">✉ Email</a>
+                  <a href={`tel:${officer.phone}`}    className="officer-contact-link btn-ghost btn-sm">📞 Call</a>
                 </div>
                 <div style={{ marginTop:8, fontSize:'0.82rem', color:'var(--text-light)' }}>
-                  {myOfficer.email} · {myOfficer.phone}
+                  {officer.email} · {officer.phone}
                 </div>
               </div>
             </div>

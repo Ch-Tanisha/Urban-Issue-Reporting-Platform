@@ -136,8 +136,8 @@ export default function OfficerHome({ issues, officer, onStatusChange, onToggleD
               </thead>
               <tbody>
                 {filtered.map(issue => (
-                  <tr key={issue.id}>
-                    <td style={{ color:'var(--off-muted)', fontSize:'0.8rem' }}>#{issue.id}</td>
+                  <tr key={issue._id}>
+                    <td style={{ color:'var(--off-muted)', fontSize:'0.8rem' }}>#{(issue._id || '').slice(-6)}</td>
                     <td style={{ fontWeight:600, maxWidth:220 }}>
                       <div style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{issue.title}</div>
                       <div style={{ fontSize:'0.72rem', color:'var(--off-muted)', fontWeight:400 }}>{issue.address}</div>
@@ -145,12 +145,12 @@ export default function OfficerHome({ issues, officer, onStatusChange, onToggleD
                     <td style={{ fontSize:'0.82rem' }}>{issue.category}</td>
                     <td><StatusBadge value={issue.priority} type="priority" /></td>
                     <td><StatusBadge value={issue.status}   type="status"   /></td>
-                    <td style={{ fontSize:'0.8rem', color:'var(--off-muted)', whiteSpace:'nowrap' }}>{issue.reportedOn}</td>
+                    <td style={{ fontSize:'0.8rem', color:'var(--off-muted)', whiteSpace:'nowrap' }}>{issue.reportedOn || new Date(issue.createdAt).toLocaleDateString()}</td>
                     <td style={{ textAlign:'right' }}>
                       <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
                         <select
                           value={issue.status}
-                          onChange={e => onStatusChange(issue.id, e.target.value)}
+                          onChange={e => onStatusChange(issue._id, e.target.value)}
                           className="officer-status-select"
                         >
                           <option>Reported</option><option>In Progress</option><option>Resolved</option>
@@ -207,7 +207,7 @@ export default function OfficerHome({ issues, officer, onStatusChange, onToggleD
               <button 
                 className="btn-primary btn-sm" 
                 style={{ flex:1, justifyContent:'center' }}
-                onClick={() => onToggleDup(modal.id)}
+                onClick={() => onToggleDup(modal._id)}
               >
                 {modal.isDuplicate ? '↩ Mark as Valid' : '⊟ Mark as Duplicate'}
               </button>

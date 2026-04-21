@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../../components/Sidebar'
 import OfficerHome      from './OfficerHome'
 import OfficerMyIssues  from './OfficerMyIssues'
 import OfficerAnalytics from './OfficerAnalytics'
 import OfficerProfile   from './OfficerProfile'
-import { initialIssues, officers } from '../../data/mockData'
+import NotificationBell from '../../components/NotificationBell'
+import API from '../../api/axios'
 import './officer.css'
 
 const NAV = [
@@ -15,21 +16,78 @@ const NAV = [
 ]
 
 export default function OfficerDashboard() {
-  const stored   = JSON.parse(localStorage.getItem('uv_user') || '{}')
-  const officer  = officers.find(o => o.name === stored.name) || officers[0]
+  const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
+  const [officer, setOfficer] = useState({
+    name: stored.name || 'Officer',
+    email: stored.email || '',
+    phone: stored.phone || '',
+    block: stored.block || '',
+    avatar: stored.name ? stored.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) : 'OF',
+    id: stored.id || ''
+  })
 
-  const [issues, setIssues] = useState(initialIssues.filter(i => i.block === officer.block))
+  const [issues, setIssues] = useState([])
   const [view, setView]     = useState('home')
+  const [loading, setLoading] = useState(true)
 
-  function updateStatus(id, status) {
-    setIssues(prev => prev.map(i => i.id === id ? { ...i, status } : i))
+  // Fetch officer profile from backend
+  async function fetchProfile() {
+    try {
+      const { data } = await API.get('/api/block/profile')
+      setOfficer({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        block: data.assignedBlock || stored.block,
+        avatar: data.avatar || data.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2),
+        id: data._id || data.userId
+      })
+    } catch (err) {
+      console.error('Failed to fetch officer profile:', err)
+    }
   }
-  function toggleDuplicate(id) {
-    setIssues(prev => prev.map(i => i.id === id ? { ...i, isDuplicate: !i.isDuplicate } : i))
+
+  // Fetch assigned block issues
+  async function fetchIssues() {
+    try {
+      setLoading(true)
+      const { data } = await API.get('/api/block/issues')
+      setIssues(data)
+    } catch (err) {
+      console.error('Failed to fetch block issues:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchProfile()
+    fetchIssues()
+  }, [])
+
+  // Update issue status via API
+  async function updateStatus(id, status) {
+    try {
+      await API.put(`/api/issues/${id}/status`, { status })
+      setIssues(prev => prev.map(i => i._id === id ? { ...i, status } : i))
+    } catch (err) {
+      console.error('Failed to update status:', err)
+      alert(err.response?.data?.message || 'Failed to update issue status')
+    }
+  }
+
+  // Toggle duplicate flag via API
+  async function toggleDuplicate(id) {
+    try {
+      const { data } = await API.put(`/api/issues/${id}/duplicate`)
+      setIssues(prev => prev.map(i => i._id === id ? { ...i, isDuplicate: data.isDuplicate } : i))
+    } catch (err) {
+      console.error('Failed to toggle duplicate:', err)
+    }
   }
 
   const views = {
-    home:      <OfficerHome      issues={issues} officer={officer} onStatusChange={updateStatus} onToggleDup={toggleDuplicate} />,
+    home:      <OfficerHome      issues={issues} officer={officer} onStatusChange={updateStatus} onToggleDup={toggleDuplicate} loading={loading} />,
     myissues:  <OfficerMyIssues  issues={issues} officer={officer} onStatusChange={updateStatus} />,
     analytics: <OfficerAnalytics issues={issues} officer={officer} />,
     profile:   <OfficerProfile   officer={officer} />,
@@ -52,6 +110,7 @@ export default function OfficerDashboard() {
             <div className="top-bar-sub">Managing issues for <strong>{officer.block}</strong></div>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <NotificationBell />
             <div className="officer-topbar-badge">{officer.block}</div>
           </div>
         </div>

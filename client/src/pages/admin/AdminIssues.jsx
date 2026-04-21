@@ -24,7 +24,7 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
     const matchC = cat    === 'all' || i.category === cat
     const matchP = pri    === 'all' || i.priority === pri
     return matchQ && matchS && matchB && matchC && matchP
-  }).sort((a,b) => new Date(b.reportedOn) - new Date(a.reportedOn))
+  }).sort((a,b) => new Date(b.reportedOn || b.createdAt) - new Date(a.reportedOn || a.createdAt))
 
   function clearFilters() {
     setSearch(''); setStatus('all'); setBlock('all'); setCat('all'); setPri('all')
@@ -81,8 +81,8 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
               </thead>
               <tbody>
                 {filtered.map(issue => (
-                  <tr key={issue.id}>
-                    <td style={{ color:'var(--text-muted)', fontSize:'0.78rem' }}>#{issue.id}</td>
+                  <tr key={issue._id}>
+                    <td style={{ color:'var(--text-muted)', fontSize:'0.78rem' }}>#{(issue._id || '').slice(-6)}</td>
                     <td style={{ fontWeight:600, maxWidth:180 }}>
                       <div style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{issue.title}</div>
                     </td>
@@ -90,7 +90,7 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
                     <td style={{ fontSize:'0.8rem' }}>{issue.category}</td>
                     <td><StatusBadge value={issue.priority} type="priority" /></td>
                     <td>
-                      <select value={issue.status} onChange={e=>onStatus(issue.id,e.target.value)} className="officer-status-select">
+                      <select value={issue.status} onChange={e=>onStatus(issue._id,e.target.value)} className="officer-status-select">
                         <option>Reported</option><option>In Progress</option><option>Resolved</option>
                       </select>
                     </td>
@@ -99,8 +99,8 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
                     <td style={{ textAlign:'right' }}>
                       <div style={{ display:'flex', gap:6, justifyContent:'flex-end' }}>
                         <button className="btn-ghost btn-sm" onClick={()=>setDetail(issue)}>👁 View</button>
-                        <button className="btn-ghost btn-sm" style={{ color:'var(--secondary)' }} onClick={()=>setConfirm({id:issue.id,action:'resolve'})}>✅ Resolve</button>
-                        <button className="btn-danger btn-sm"  onClick={()=>setConfirm({id:issue.id,action:'delete'})}>🗑 Delete</button>
+                        <button className="btn-ghost btn-sm" style={{ color:'var(--secondary)' }} onClick={()=>setConfirm({id:issue._id,action:'resolve'})}>✅ Resolve</button>
+                        <button className="btn-danger btn-sm"  onClick={()=>setConfirm({id:issue._id,action:'delete'})}>🗑 Delete</button>
                       </div>
                     </td>
                   </tr>

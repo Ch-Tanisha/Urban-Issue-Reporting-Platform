@@ -1,5 +1,6 @@
-import { useState } from 'react'
+zimport { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API from '../api/axios'
 import './auth.css'
 
 const BLOCKS = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E']
@@ -17,28 +18,31 @@ function passwordStrength(p) {
 }
 
 export default function AuthPage() {
-  const navigate  = useNavigate()
-  const [mode, setMode]   = useState('login')  // 'login' | 'signup'
+  const navigate = useNavigate()
+  const [mode, setMode] = useState('login')  // 'login' | 'signup'
   const [showPwd, setShowPwd] = useState(false)
   const [showPwd2, setShowPwd2] = useState(false)
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   /* ---- LOGIN state ---- */
-  const [login, setLogin] = useState({ email:'', password:'', role:'' })
+  const [login, setLogin] = useState({ email: '', password: '', role: '' })
 
   /* ---- SIGNUP state ---- */
   const [signup, setSignup] = useState({
-    name:'', age:'', gender:'', email:'', phone:'',
-    address:'', city:'', pincode:'', block:'',
-    password:'', confirmPass:'', role:'', terms: false,
+    name: '', age: '', gender: '', email: '', phone: '',
+    address: '', city: '', pincode: '', block: '',
+    password: '', confirmPass: '', role: '', terms: false,
   })
 
   const pwdStr = passwordStrength(signup.password)
-  const pwdColors = ['#e2e8f0','#dc2626','#f59e0b','#fbbf24','#059669','#059669']
-  const pwdLabels = ['','Weak','Fair','Good','Strong','Very Strong']
+  const pwdColors = ['#e2e8f0', '#dc2626', '#f59e0b', '#fbbf24', '#059669', '#059669']
+  const pwdLabels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong']
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault()
+    setServerError('')
     const errs = {}
     if (!login.email) errs.email = 'Required'
     else if (!validateEmail(login.email) && !validatePhone(login.email)) errs.email = 'Invalid email or phone'
@@ -47,15 +51,33 @@ export default function AuthPage() {
     setErrors(errs)
     if (Object.keys(errs).length) return
 
-    localStorage.setItem('uv_role', login.role)
-    localStorage.setItem('uv_user', JSON.stringify({ email: login.email, name: login.email.split('@')[0] }))
+    setLoading(true)
+    try {
+      const { data } = await API.post('/api/auth/login', {
+        email: login.email,
+        password: login.password,
+        role: login.role
+      })
 
-    const routes = { citizen:'/citizen', officer:'/officer', admin:'/admin' }
-    navigate(routes[login.role] || '/citizen')
+      // Save token and user data
+      localStorage.setItem('uv_token', data.token)
+      const frontendRole = data.user.role === 'blockofficer' ? 'officer' : data.user.role
+      localStorage.setItem('uv_role', frontendRole)
+      localStorage.setItem('uv_user', JSON.stringify(data.user))
+
+      const routes = { citizen: '/citizen', officer: '/officer', admin: '/admin' }
+      navigate(routes[frontendRole] || '/citizen')
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Login failed. Please try again.'
+      setServerError(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  function handleSignup(e) {
+  async function handleSignup(e) {
     e.preventDefault()
+    setServerError('')
     const errs = {}
     if (signup.name.trim().length < 3) errs.name = 'Min 3 characters'
     if (!signup.age || Number(signup.age) < 18) errs.age = 'Must be 18+'
@@ -65,24 +87,50 @@ export default function AuthPage() {
     if (signup.address.trim().length < 10) errs.address = 'Full address required'
     if (signup.city.trim().length < 2) errs.city = 'Required'
     if (!/^\d{6}$/.test(signup.pincode)) errs.pincode = '6-digit pincode required'
-    if (!signup.block) errs.block = 'Select a block'
+    if (!signup.role) errs.role = 'Select a role'
+    if (signup.role !== 'admin' && !signup.block) errs.block = 'Select a block'
     if (pwdStr < 3) errs.password = 'Password too weak'
     if (signup.password !== signup.confirmPass) errs.confirmPass = 'Passwords do not match'
-    if (!signup.role) errs.role = 'Select a role'
     if (!signup.terms) errs.terms = 'Accept terms to continue'
     setErrors(errs)
     if (Object.keys(errs).length) return
 
-    // On success → redirect to login with success message
-    localStorage.setItem('uv_role', signup.role)
-    localStorage.setItem('uv_user', JSON.stringify({ name: signup.name, email: signup.email, block: signup.block }))
-    const routes = { citizen:'/citizen', officer:'/officer', admin:'/admin' }
-    navigate(routes[signup.role] || '/citizen')
+    setLoading(true)
+    try {
+      const { data } = await API.post('/api/auth/register', {
+        name: signup.name,
+        email: signup.email,
+        password: signup.password,
+        phone: signup.phone,
+        role: signup.role === 'officer' ? 'blockofficer' : signup.role,
+        age: Number(signup.age),
+        gender: signup.gender,
+        address: signup.address,
+        city: signup.city,
+        pincode: signup.pincode,
+        block: signup.block
+      })
+
+      // Save token and user data
+      localStorage.setItem('uv_token', data.token)
+      const frontendRole = data.user.role === 'blockofficer' ? 'officer' : data.user.role
+      localStorage.setItem('uv_role', frontendRole)
+      localStorage.setItem('uv_user', JSON.stringify(data.user))
+
+      const routes = { citizen: '/citizen', officer: '/officer', admin: '/admin' }
+      navigate(routes[frontendRole] || '/citizen')
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Registration failed. Please try again.'
+      setServerError(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const set = (setter) => (field) => (e) => {
     setter(prev => ({ ...prev, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
     setErrors(prev => ({ ...prev, [field]: undefined }))
+    setServerError('')
   }
 
   return (
@@ -108,6 +156,8 @@ export default function AuthPage() {
             <div className="auth-logo">🏛️ UrbanVoice</div>
             <h2>Welcome Back</h2>
             <p className="auth-subtitle">Sign in to your account</p>
+
+            {serverError && <div className="auth-server-error" style={{ background: '#fef2f2', color: '#dc2626', padding: '10px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 16, border: '1px solid #fecaca' }}>{serverError}</div>}
 
             <form onSubmit={handleLogin} noValidate>
               <div className="auth-field">
@@ -142,9 +192,11 @@ export default function AuthPage() {
                 {errors.role && <span className="auth-err">{errors.role}</span>}
               </div>
 
-              <button type="submit" className="auth-submit">Login →</button>
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? '⏳ Signing in…' : 'Login →'}
+              </button>
             </form>
-            <p className="auth-switch">Don't have an account? <button onClick={() => { setMode('signup'); setErrors({}) }}>Sign up</button></p>
+            <p className="auth-switch">Don't have an account? <button onClick={() => { setMode('signup'); setErrors({}); setServerError('') }}>Sign up</button></p>
           </div>
 
         ) : (
@@ -152,6 +204,8 @@ export default function AuthPage() {
             <div className="auth-logo">🏛️ UrbanVoice</div>
             <h2>Create Account</h2>
             <p className="auth-subtitle">Join our community</p>
+
+            {serverError && <div className="auth-server-error" style={{ background: '#fef2f2', color: '#dc2626', padding: '10px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 16, border: '1px solid #fecaca' }}>{serverError}</div>}
 
             <div className="auth-scroll-area">
               <form onSubmit={handleSignup} noValidate>
@@ -189,6 +243,17 @@ export default function AuthPage() {
                   {errors.email && <span className="auth-err">{errors.email}</span>}
                 </div>
 
+                <div className="auth-field">
+                  <label>Account Role *</label>
+                  <select value={signup.role} onChange={set(setSignup)('role')} className={errors.role ? 'err' : ''}>
+                    <option value="">Select role</option>
+                    <option value="citizen">Citizen</option>
+                    <option value="officer">Block Officer</option>
+                    <option value="admin">Administrator</option>
+                  </select>
+                  {errors.role && <span className="auth-err">{errors.role}</span>}
+                </div>
+
                 <div className="auth-row">
                   <div className="auth-field">
                     <label>Phone *</label>
@@ -197,14 +262,16 @@ export default function AuthPage() {
                       className={errors.phone ? 'err' : ''} />
                     {errors.phone && <span className="auth-err">{errors.phone}</span>}
                   </div>
-                  <div className="auth-field">
-                    <label>Block *</label>
-                    <select value={signup.block} onChange={set(setSignup)('block')} className={errors.block ? 'err' : ''}>
-                      <option value="">Select block</option>
-                      {BLOCKS.map(b => <option key={b}>{b}</option>)}
-                    </select>
-                    {errors.block && <span className="auth-err">{errors.block}</span>}
-                  </div>
+                  {signup.role !== 'admin' && (
+                    <div className="auth-field">
+                      <label>Block *</label>
+                      <select value={signup.block} onChange={set(setSignup)('block')} className={errors.block ? 'err' : ''}>
+                        <option value="">Select block</option>
+                        {BLOCKS.map(b => <option key={b}>{b}</option>)}
+                      </select>
+                      {errors.block && <span className="auth-err">{errors.block}</span>}
+                    </div>
+                  )}
                 </div>
 
                 <div className="auth-field">
@@ -243,9 +310,9 @@ export default function AuthPage() {
                     </button>
                   </div>
                   <div className="auth-strength-bar">
-                    <div style={{ width:`${(pwdStr/5)*100}%`, background: pwdColors[pwdStr], height:'100%', borderRadius:2, transition:'all 0.3s' }} />
+                    <div style={{ width: `${(pwdStr / 5) * 100}%`, background: pwdColors[pwdStr], height: '100%', borderRadius: 2, transition: 'all 0.3s' }} />
                   </div>
-                  {signup.password && <span style={{ fontSize:'0.75rem', color: pwdColors[pwdStr] }}>{pwdLabels[pwdStr]}</span>}
+                  {signup.password && <span style={{ fontSize: '0.75rem', color: pwdColors[pwdStr] }}>{pwdLabels[pwdStr]}</span>}
                   {errors.password && <span className="auth-err">{errors.password}</span>}
                 </div>
 
@@ -262,27 +329,18 @@ export default function AuthPage() {
                   {errors.confirmPass && <span className="auth-err">{errors.confirmPass}</span>}
                 </div>
 
-                <div className="auth-field">
-                  <label>Role *</label>
-                  <select value={signup.role} onChange={set(setSignup)('role')} className={errors.role ? 'err' : ''}>
-                    <option value="">Select role</option>
-                    <option value="citizen">Citizen</option>
-                    <option value="officer">Block Officer</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                  {errors.role && <span className="auth-err">{errors.role}</span>}
-                </div>
-
                 <div className="auth-checkbox">
                   <input type="checkbox" id="terms" checked={signup.terms} onChange={set(setSignup)('terms')} />
                   <label htmlFor="terms">I agree to the <a href="#">Terms &amp; Privacy Policy</a></label>
                 </div>
                 {errors.terms && <span className="auth-err">{errors.terms}</span>}
 
-                <button type="submit" className="auth-submit">Create Account →</button>
+                <button type="submit" className="auth-submit" disabled={loading}>
+                  {loading ? '⏳ Creating Account…' : 'Create Account →'}
+                </button>
               </form>
             </div>
-            <p className="auth-switch">Already have an account? <button onClick={() => { setMode('login'); setErrors({}) }}>Login</button></p>
+            <p className="auth-switch">Already have an account? <button onClick={() => { setMode('login'); setErrors({}); setServerError('') }}>Login</button></p>
           </div>
         )}
       </div>
