@@ -62,6 +62,35 @@
   --priority-low-text:  #059669;
 }
 
+[data-theme='dark'] {
+  --primary:       #60a5fa;
+  --primary-light: #93c5fd;
+  --primary-dark:  #3b82f6;
+  --secondary:     #34d399;
+  --secondary-light:#6ee7b7;
+  --accent:        #fbbf24;
+  --danger:        #f87171;
+  --warning:       #f59e0b;
+
+  --text:          #e2e8f0;
+  --text-light:    #94a3b8;
+  --text-muted:    #64748b;
+
+  --bg:            #0f172a;
+  --bg-light:      #111827;
+  --bg-muted:      #1f2937;
+  --border:        rgba(148,163,184,0.2);
+  --border-solid:  #334155;
+
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow:        0 4px 16px rgba(0,0,0,0.35);
+  --shadow-md:     0 10px 30px rgba(0,0,0,0.4);
+  --shadow-lg:     0 20px 50px rgba(0,0,0,0.45);
+
+  --gradient:      linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(16,185,129,0.15) 100%);
+}
+
 /* ---------- Reset ---------- */
 *, *::before, *::after {
   margin: 0;
@@ -78,6 +107,26 @@ body {
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Theme Toggle ---------- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-solid);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: var(--transition);
+}
+.theme-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
 }
 
 img { max-width: 100%; display: block; }
@@ -375,7 +424,7 @@ ul, ol { list-style: none; }
   margin-top: 6px;
 }
 
-/* ---------- Sidebar Shared ---------- */
+/* ---------- Sidebar Shared (Unified Dark Theme) ---------- */
 .sidebar {
   width: var(--sidebar-w);
   min-height: 100vh;
@@ -384,6 +433,23 @@ ul, ol { list-style: none; }
   position: sticky;
   top: 0;
   flex-shrink: 0;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  z-index: 100;
+}
+.sidebar-close-mobile {
+  display: none;
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: none;
+  color: white; font-size: 1.1rem; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+  animation: fadeIn 0.2s ease;
 }
 .sidebar-logo {
   display: flex;
@@ -465,6 +531,19 @@ ul, ol { list-style: none; }
 }
 .sidebar-logout:hover { background: rgba(220,38,38,0.2); border-color: rgba(220,38,38,0.4); color: #fca5a5; }
 
+/* ---------- Mobile Hamburger Button ---------- */
+.hamburger-btn {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-solid);
+  background: var(--bg);
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
 /* ---------- Main Content Shell ---------- */
 .main-content {
   flex: 1;
@@ -500,6 +579,43 @@ ul, ol { list-style: none; }
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 18px;
   margin-bottom: 28px;
+}
+
+/* ---------- Role Welcome Banner ---------- */
+.role-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-sm);
+  gap: 20px;
+}
+.role-welcome h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.role-welcome p {
+  color: var(--text-light);
+  max-width: 520px;
+  font-size: 0.9rem;
+}
+.role-welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.role-welcome-admin {
+  background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 100%);
+  border-left: 4px solid #2563eb;
+}
+.role-welcome-officer {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-left: 4px solid #059669;
 }
 
 /* ---------- Card Panel ---------- */
@@ -551,7 +667,39 @@ ul, ol { list-style: none; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
-  .sidebar { display: none; }
+  .sidebar {
+    position: fixed;
+    left: -300px;
+    top: 0;
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 100;
+  }
+  .sidebar.sidebar-mobile-open {
+    left: 0;
+  }
+  .sidebar-close-mobile {
+    display: flex;
+  }
+  .sidebar-overlay {
+    display: block;
+  }
+  .hamburger-btn {
+    display: flex;
+  }
   .page-content { padding: 20px 16px; }
-  .top-bar { padding: 12px 16px; }
+  .top-bar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .role-welcome {
+    flex-direction: column;
+    padding: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .top-bar { flex-direction: column; align-items: flex-start; }
 }

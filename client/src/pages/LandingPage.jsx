@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ThemeToggle from '../components/ThemeToggle'
 import './landing.css'
 
 const FEATURES = [
@@ -33,6 +34,13 @@ const STATS = [
   { count: 450,  label: 'Active Citizens' },
   { count: 25,   label: 'Blocks Covered'  },
 ]
+
+const LOGO_SVG = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v8.55c0 4.55-3.08 8.8-8 9.93-4.92-1.13-8-5.38-8-9.93V7.78l8-3.6z"/>
+    <path d="M11 15l-3-3 1.41-1.41L11 12.17l5.59-5.59L18 8l-7 7z"/>
+  </svg>
+)
 
 function useCountUp(target, active) {
   const [val, setVal] = useState(0)
@@ -78,9 +86,7 @@ export default function LandingPage() {
         <div className="lp-nav-inner">
           <a href="#" className="lp-logo">
             <div className="lp-logo-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-              </svg>
+              {LOGO_SVG}
             </div>
             <span>UrbanVoice</span>
           </a>
@@ -90,14 +96,16 @@ export default function LandingPage() {
             <li><a href="#categories">Categories</a></li>
             <li><a href="#impact">Impact</a></li>
           </ul>
-          <button className="lp-login-btn" onClick={() => navigate('/auth')}>Login</button>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <ThemeToggle />
+            <button className="lp-login-btn" onClick={() => navigate('/auth')}>Login</button>
+          </div>
         </div>
       </nav>
 
       {/* HERO */}
       <section className="lp-hero">
         <div className="lp-hero-content animate-fadeInUp">
-          <span className="lp-hero-badge">🏙️ Urban Issue Management Platform</span>
           <h1 className="lp-hero-title">Report Urban Issues,<br />Drive Real Change</h1>
           <p className="lp-hero-sub">
             Help improve your city by reporting potholes, broken streetlights, and sanitation issues directly to your block officer. Track progress and make a difference.

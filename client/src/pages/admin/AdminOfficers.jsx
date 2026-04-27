@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react'
 import API from '../../api/axios'
 
+function mailtoHref(value) {
+  const raw = String(value || '').trim()
+  const email = raw.match(/<([^>]+)>/)?.[1] || raw
+  return `mailto:${email.trim()}`
+}
+
 export default function AdminOfficers() {
   const [officers, setOfficers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -13,8 +19,12 @@ export default function AdminOfficers() {
       setLoading(true)
       const { data } = await API.get('/api/admin/officers')
       setOfficers(data)
+      setFormError('')
     } catch (err) {
       console.error('Failed to fetch officers:', err)
+      if (err.response?.status === 403) {
+        setFormError('Your current session does not have admin privileges. Please log out and log in again as Administrator.')
+      }
     } finally {
       setLoading(false)
     }
@@ -55,7 +65,6 @@ export default function AdminOfficers() {
     <div>
       <div className="page-section-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
-          <p className="eyebrow">Block Officers</p>
           <h2>Manage Block Officers</h2>
           <p>View, create, and manage block officer accounts.</p>
         </div>
@@ -121,7 +130,7 @@ export default function AdminOfficers() {
               <h3 className="admin-officer-name">{o.name}</h3>
               <p className="admin-officer-role">Block Officer</p>
               <div className="admin-officer-contacts">
-                <a href={`mailto:${o.email}`} className="admin-contact-item">
+                <a href={mailtoHref(o.email)} className="admin-contact-item">
                   <span>✉</span> {o.email}
                 </a>
                 <a href={`tel:${o.phone}`} className="admin-contact-item">
@@ -129,7 +138,7 @@ export default function AdminOfficers() {
                 </a>
               </div>
               <div style={{ marginTop:16, display:'flex', gap:8 }}>
-                <a href={`mailto:${o.email}`} className="btn-ghost btn-sm" style={{ flex:1, textAlign:'center', textDecoration:'none' }}>✉ Email</a>
+                <a href={mailtoHref(o.email)} className="btn-ghost btn-sm" style={{ flex:1, textAlign:'center', textDecoration:'none' }}>✉ Email</a>
                 <button className="btn-danger btn-sm" style={{ flex:1 }} onClick={() => handleDelete(o._id)}>🗑 Delete</button>
               </div>
             </div>

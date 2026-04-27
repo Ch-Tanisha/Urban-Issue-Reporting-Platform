@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API from '../api/axios'
+import ThemeToggle from '../components/ThemeToggle'
 import './auth.css'
 
 const BLOCKS = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E']
@@ -17,9 +18,18 @@ function passwordStrength(p) {
   return s
 }
 
+// Helper: wipe any existing session before starting a new login/signup.
+// This prevents the stale-token bug where a previous user's session
+// bleeds into a new login.
+function clearSession() {
+  sessionStorage.removeItem('uv_token')
+  sessionStorage.removeItem('uv_user')
+  sessionStorage.removeItem('uv_role')
+}
+
 export default function AuthPage() {
   const navigate = useNavigate()
-  const [mode, setMode] = useState('login')  // 'login' | 'signup'
+  const [mode, setMode] = useState('login')  // 'login' | 'signup' | 'forgot'
   const [showPwd, setShowPwd] = useState(false)
   const [showPwd2, setShowPwd2] = useState(false)
   const [errors, setErrors] = useState({})
@@ -29,11 +39,16 @@ export default function AuthPage() {
   /* ---- LOGIN state ---- */
   const [login, setLogin] = useState({ email: '', password: '', role: '' })
 
+  /* ---- FORGOT PASSWORD state ---- */
+  const [forgot, setForgot] = useState({ email: '', token: '', newPassword: '', confirmPassword: '' })
+  const [forgotTokenGenerated, setForgotTokenGenerated] = useState(false)
+  const [forgotInfo, setForgotInfo] = useState('')
+
   /* ---- SIGNUP state ---- */
   const [signup, setSignup] = useState({
     name: '', age: '', gender: '', email: '', phone: '',
     address: '', city: '', pincode: '', block: '',
-    password: '', confirmPass: '', role: '', terms: false,
+    password: '', confirmPass: '', role: 'citizen', terms: false,
   })
 
   const pwdStr = passwordStrength(signup.password)
@@ -51,24 +66,34 @@ export default function AuthPage() {
     setErrors(errs)
     if (Object.keys(errs).length) return
 
+    // Wipe old session so a previous user's token doesn't interfere
+    clearSession()
+
     setLoading(true)
     try {
-      const { data } = await API.post('/api/auth/login', {
-        email: login.email,
-        password: login.password,
-        role: login.role
+      // Each role hits its own endpoint that verifies role + issues a role-specific JWT
+      const roleEndpoints = {
+        citizen: '/api/auth/login/citizen',
+        officer: '/api/auth/login/officer',
+        admin:   '/api/auth/login/admin'
+      }
+      const endpoint = roleEndpoints[login.role] || '/api/auth/login'
+
+      const { data } = await API.post(endpoint, {
+        email:    login.email,
+        password: login.password
       })
 
-      // Save token and user data
-      localStorage.setItem('uv_token', data.token)
+      // Persist the session in sessionStorage (tab-scoped, not shared across tabs)
+      sessionStorage.setItem('uv_token', data.token)
       const frontendRole = data.user.role === 'blockofficer' ? 'officer' : data.user.role
-      localStorage.setItem('uv_role', frontendRole)
-      localStorage.setItem('uv_user', JSON.stringify(data.user))
+      sessionStorage.setItem('uv_role', frontendRole)
+      sessionStorage.setItem('uv_user', JSON.stringify(data.user))
 
       const routes = { citizen: '/citizen', officer: '/officer', admin: '/admin' }
       navigate(routes[frontendRole] || '/citizen')
     } catch (err) {
-      const msg = err.response?.data?.message || 'Login failed. Please try again.'
+      const msg = err.response?.data?.message || 'Login failed. Please check your credentials and selected role.'
       setServerError(msg)
     } finally {
       setLoading(false)
@@ -87,13 +112,15 @@ export default function AuthPage() {
     if (signup.address.trim().length < 10) errs.address = 'Full address required'
     if (signup.city.trim().length < 2) errs.city = 'Required'
     if (!/^\d{6}$/.test(signup.pincode)) errs.pincode = '6-digit pincode required'
-    if (!signup.role) errs.role = 'Select a role'
-    if (signup.role !== 'admin' && !signup.block) errs.block = 'Select a block'
+    if (!signup.block) errs.block = 'Select a block'
     if (pwdStr < 3) errs.password = 'Password too weak'
     if (signup.password !== signup.confirmPass) errs.confirmPass = 'Passwords do not match'
     if (!signup.terms) errs.terms = 'Accept terms to continue'
     setErrors(errs)
     if (Object.keys(errs).length) return
+
+    // Clean slate before registering
+    clearSession()
 
     setLoading(true)
     try {
@@ -102,7 +129,7 @@ export default function AuthPage() {
         email: signup.email,
         password: signup.password,
         phone: signup.phone,
-        role: signup.role === 'officer' ? 'blockofficer' : signup.role,
+        role: 'citizen',
         age: Number(signup.age),
         gender: signup.gender,
         address: signup.address,
@@ -111,17 +138,81 @@ export default function AuthPage() {
         block: signup.block
       })
 
-      // Save token and user data
-      localStorage.setItem('uv_token', data.token)
+      sessionStorage.setItem('uv_token', data.token)
       const frontendRole = data.user.role === 'blockofficer' ? 'officer' : data.user.role
-      localStorage.setItem('uv_role', frontendRole)
-      localStorage.setItem('uv_user', JSON.stringify(data.user))
+      sessionStorage.setItem('uv_role', frontendRole)
+      sessionStorage.setItem('uv_user', JSON.stringify(data.user))
 
       const routes = { citizen: '/citizen', officer: '/officer', admin: '/admin' }
       navigate(routes[frontendRole] || '/citizen')
     } catch (err) {
       const msg = err.response?.data?.message || 'Registration failed. Please try again.'
       setServerError(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleForgotRequest(e) {
+    e.preventDefault()
+    setServerError('')
+    setForgotInfo('')
+
+    if (!validateEmail(forgot.email)) {
+      setServerError('Enter a valid email address.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const { data } = await API.post('/api/auth/forgot-password', { email: forgot.email })
+      setForgotTokenGenerated(true)
+      setForgotInfo(data?.message || 'Reset token requested successfully.')
+
+      if (data?.resetToken) {
+        setForgot(prev => ({ ...prev, token: data.resetToken }))
+      }
+    } catch (err) {
+      setServerError(err.response?.data?.message || 'Failed to request password reset.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handlePasswordReset(e) {
+    e.preventDefault()
+    setServerError('')
+    setForgotInfo('')
+
+    if (!validateEmail(forgot.email)) {
+      setServerError('Enter a valid email address.')
+      return
+    }
+    if (!forgot.token.trim()) {
+      setServerError('Reset token is required.')
+      return
+    }
+    if (forgot.newPassword.length < 6) {
+      setServerError('New password must be at least 6 characters.')
+      return
+    }
+    if (forgot.newPassword !== forgot.confirmPassword) {
+      setServerError('New password and confirm password do not match.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const { data } = await API.post('/api/auth/reset-password', {
+        email: forgot.email,
+        token: forgot.token,
+        newPassword: forgot.newPassword,
+      })
+      setForgotInfo(data?.message || 'Password reset successfully. You can log in now.')
+      setForgot({ email: forgot.email, token: '', newPassword: '', confirmPassword: '' })
+      setMode('login')
+    } catch (err) {
+      setServerError(err.response?.data?.message || 'Failed to reset password.')
     } finally {
       setLoading(false)
     }
@@ -138,7 +229,6 @@ export default function AuthPage() {
       {/* Left image panel */}
       <div className="auth-image-panel">
         <div className="auth-image-content">
-          <div className="auth-brand">🏛️ UrbanVoice</div>
           <h1>Your Voice,<br />Your City</h1>
           <p>Transforming communities one report at a time. Join thousands making a real difference in urban development.</p>
           <div className="auth-badges">
@@ -151,9 +241,12 @@ export default function AuthPage() {
 
       {/* Right form panel */}
       <div className="auth-form-panel">
+        <div style={{ position:'absolute', top:16, right:20 }}>
+          <ThemeToggle />
+        </div>
+
         {mode === 'login' ? (
           <div className="auth-form-inner animate-fadeInUp">
-            <div className="auth-logo">🏛️ UrbanVoice</div>
             <h2>Welcome Back</h2>
             <p className="auth-subtitle">Sign in to your account</p>
 
@@ -196,12 +289,26 @@ export default function AuthPage() {
                 {loading ? '⏳ Signing in…' : 'Login →'}
               </button>
             </form>
+            <div style={{ textAlign:'right', marginTop:10 }}>
+              <button
+                type="button"
+                className="auth-link-btn"
+                onClick={() => {
+                  setMode('forgot')
+                  setErrors({})
+                  setServerError('')
+                  setForgotTokenGenerated(false)
+                  setForgotInfo('')
+                }}
+              >
+                Forgot password?
+              </button>
+            </div>
             <p className="auth-switch">Don't have an account? <button onClick={() => { setMode('signup'); setErrors({}); setServerError('') }}>Sign up</button></p>
           </div>
 
-        ) : (
+        ) : mode === 'signup' ? (
           <div className="auth-form-inner animate-fadeInUp">
-            <div className="auth-logo">🏛️ UrbanVoice</div>
             <h2>Create Account</h2>
             <p className="auth-subtitle">Join our community</p>
 
@@ -243,16 +350,9 @@ export default function AuthPage() {
                   {errors.email && <span className="auth-err">{errors.email}</span>}
                 </div>
 
-                <div className="auth-field">
-                  <label>Account Role *</label>
-                  <select value={signup.role} onChange={set(setSignup)('role')} className={errors.role ? 'err' : ''}>
-                    <option value="">Select role</option>
-                    <option value="citizen">Citizen</option>
-                    <option value="officer">Block Officer</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                  {errors.role && <span className="auth-err">{errors.role}</span>}
-                </div>
+                {/* Public signup is citizen-only. Officers are created by admin. */}
+                <input type="hidden" value="citizen" />
+
 
                 <div className="auth-row">
                   <div className="auth-field">
@@ -262,16 +362,14 @@ export default function AuthPage() {
                       className={errors.phone ? 'err' : ''} />
                     {errors.phone && <span className="auth-err">{errors.phone}</span>}
                   </div>
-                  {signup.role !== 'admin' && (
-                    <div className="auth-field">
-                      <label>Block *</label>
-                      <select value={signup.block} onChange={set(setSignup)('block')} className={errors.block ? 'err' : ''}>
-                        <option value="">Select block</option>
-                        {BLOCKS.map(b => <option key={b}>{b}</option>)}
-                      </select>
-                      {errors.block && <span className="auth-err">{errors.block}</span>}
-                    </div>
-                  )}
+                  <div className="auth-field">
+                    <label>Block *</label>
+                    <select value={signup.block} onChange={set(setSignup)('block')} className={errors.block ? 'err' : ''}>
+                      <option value="">Select block</option>
+                      {BLOCKS.map(b => <option key={b}>{b}</option>)}
+                    </select>
+                    {errors.block && <span className="auth-err">{errors.block}</span>}
+                  </div>
                 </div>
 
                 <div className="auth-field">
@@ -341,6 +439,80 @@ export default function AuthPage() {
               </form>
             </div>
             <p className="auth-switch">Already have an account? <button onClick={() => { setMode('login'); setErrors({}); setServerError('') }}>Login</button></p>
+          </div>
+        ) : (
+          <div className="auth-form-inner animate-fadeInUp">
+            <h2>Reset Password</h2>
+            <p className="auth-subtitle">Request a reset token and set a new password.</p>
+
+            {serverError && <div className="auth-server-error" style={{ background: '#fef2f2', color: '#dc2626', padding: '10px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 16, border: '1px solid #fecaca' }}>{serverError}</div>}
+            {forgotInfo && <div className="auth-server-error" style={{ background: '#ecfdf5', color: '#047857', padding: '10px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 16, border: '1px solid #a7f3d0' }}>{forgotInfo}</div>}
+
+            <form onSubmit={handleForgotRequest} noValidate>
+              <div className="auth-field">
+                <label>Email</label>
+                <input
+                  type="email"
+                  placeholder="Enter your account email"
+                  value={forgot.email}
+                  onChange={e => setForgot(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? '⏳ Requesting…' : 'Request Reset Token'}
+              </button>
+            </form>
+
+            {forgotTokenGenerated && (
+              <form onSubmit={handlePasswordReset} noValidate style={{ marginTop: 16 }}>
+                <div className="auth-field">
+                  <label>Reset Token</label>
+                  <input
+                    type="text"
+                    placeholder="Paste reset token"
+                    value={forgot.token}
+                    onChange={e => setForgot(prev => ({ ...prev, token: e.target.value }))}
+                  />
+                </div>
+
+                <div className="auth-field">
+                  <label>New Password</label>
+                  <input
+                    type="password"
+                    placeholder="Enter new password"
+                    value={forgot.newPassword}
+                    onChange={e => setForgot(prev => ({ ...prev, newPassword: e.target.value }))}
+                  />
+                </div>
+
+                <div className="auth-field">
+                  <label>Confirm New Password</label>
+                  <input
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={forgot.confirmPassword}
+                    onChange={e => setForgot(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                  />
+                </div>
+
+                <button type="submit" className="auth-submit" disabled={loading}>
+                  {loading ? '⏳ Resetting…' : 'Reset Password'}
+                </button>
+              </form>
+            )}
+
+            <p className="auth-switch">
+              Back to login?{' '}
+              <button
+                onClick={() => {
+                  setMode('login')
+                  setServerError('')
+                  setForgotInfo('')
+                }}
+              >
+                Login
+              </button>
+            </p>
           </div>
         )}
       </div>

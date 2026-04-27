@@ -12,15 +12,14 @@ export default function CitizenHome({ issues, onNav, citizen, loading }) {
   return (
     <div className="citizen-home">
       {/* Welcome Banner */}
-      <div className="citizen-welcome premium-gradient-bg" style={{ borderRadius:20, padding:32, marginBottom:32, background:'var(--gradient)', color:'white', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+      <div className="citizen-welcome" style={{ borderRadius:16, padding:'28px 32px', marginBottom:28 }}>
         <div>
-          <p style={{ fontSize:'0.75rem', fontWeight:700, letterSpacing:2, opacity:0.8, marginBottom:8 }}>CITIZEN PORTAL</p>
-          <h1 style={{ fontSize:'2.2rem', fontWeight:800, lineHeight:1.1, marginBottom:12 }}>Welcome back,<br /><span>{citizen.name.split(' ')[0]}</span> 👋</h1>
-          <p style={{ opacity:0.9, maxWidth:400, fontSize:'0.95rem' }}>Track your neighborhood reports and stay connected with your local block officer.</p>
+          <h1 style={{ fontSize:'1.75rem', fontWeight:800, lineHeight:1.2, marginBottom:8, color:'var(--text)' }}>Welcome back, {citizen.name.split(' ')[0]} 👋</h1>
+          <p style={{ color:'var(--text-light)', maxWidth:420, fontSize:'0.9rem' }}>Track your neighborhood reports and stay connected with your local block officer.</p>
         </div>
         <div className="citizen-welcome-actions" style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          <button className="btn-primary" style={{ background:'white', color:'var(--primary)', boxShadow:'0 10px 20px rgba(0,0,0,0.1)' }} onClick={() => onNav('report')}>+ Report New Issue</button>
-          <button className="btn-ghost"   style={{ borderColor:'rgba(255,255,255,0.3)', color:'white' }} onClick={() => onNav('reports')}>View My Reports</button>
+          <button className="btn-primary" onClick={() => onNav('report')}>+ Report New Issue</button>
+          <button className="btn-ghost" onClick={() => onNav('reports')}>View My Reports</button>
         </div>
       </div>
 

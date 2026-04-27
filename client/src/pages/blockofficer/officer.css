@@ -1,92 +1,23 @@
 /* ============================================================
-   UrbanVoice — Block Officer Dashboard (Premium Dark Theme)
+   UrbanVoice — Block Officer Dashboard CSS
+   
+   The officer dashboard now uses the SAME light theme as
+   citizen and admin for visual consistency.
+   This file only contains officer-specific layout styles.
    ============================================================ */
 
-:root {
-  --off-bg:      #020617;
-  --off-panel:   #02081b;
-  --off-border:  #1e293b;
-  --off-text:    #f1f5f9;
-  --off-muted:   #94a3b8;
-  --off-accent:  #38bdf8;
-}
-
-.officer-theme {
-  background-color: var(--off-bg) !important;
-  color: var(--off-text);
-}
-
-.officer-theme .main-content {
-  background: var(--off-bg);
-}
-
-.officer-theme .page-content {
-  background: var(--off-bg) !important;
-}
-
-/* Sidebar & Topbar */
-.officer-theme .sidebar { background: var(--off-panel); border-right: 1px solid var(--off-border); }
-.officer-theme .top-bar { background: rgba(2, 8, 27, 0.95); border-bottom: 1px solid var(--off-border); backdrop-filter: blur(10px); }
-.officer-theme .top-bar-title { color: var(--off-text); }
-.officer-theme .top-bar-sub { color: var(--off-muted); }
-.officer-theme .top-bar-sub strong { color: var(--off-accent); }
-
+/* ── Block badge shown in the top bar ─────────────────────────── */
 .officer-topbar-badge {
-  padding: 6px 14px; border-radius: var(--radius-full);
-  background: rgba(56,189,248,0.1); color: var(--off-accent);
-  font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(56,189,248,0.2);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(37,99,235,0.08);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid rgba(37,99,235,0.15);
 }
 
-/* Panels */
-.officer-theme .panel {
-  background: var(--off-panel);
-  border: 1px solid var(--off-border);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-}
-.officer-theme .panel-header { border-bottom-color: var(--off-border); }
-.officer-theme .panel-header h3 { color: var(--off-text); }
-.officer-theme .panel-body { color: var(--off-text); }
-
-/* Stats */
-.officer-theme .stat-card {
-  background: var(--off-panel);
-  border-color: var(--off-border);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-}
-.officer-theme .stat-label { color: var(--off-muted); }
-.officer-theme .stat-value { color: var(--off-text); }
-.officer-theme .stat-sub { color: var(--off-muted); }
-
-/* Table */
-.officer-theme .uv-table thead th {
-  background: rgba(255,255,255,0.03);
-  color: var(--off-muted);
-  border-bottom-color: var(--off-border);
-}
-.officer-theme .uv-table tbody td {
-  border-bottom-color: var(--off-border);
-  color: var(--off-text);
-}
-.officer-theme .uv-table tbody tr:hover {
-  background: rgba(255,255,255,0.02);
-}
-
-/* Forms & Filters */
-.officer-theme .form-group label { color: var(--off-muted); }
-.officer-theme input, 
-.officer-theme select, 
-.officer-theme textarea {
-  background: var(--off-bg);
-  border-color: var(--off-border);
-  color: var(--off-text);
-}
-.officer-theme input:focus, 
-.officer-theme select:focus {
-  border-color: var(--off-accent);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-}
-
-/* Charts Row */
+/* ── Charts Row (3 columns on desktop, 1 on mobile) ───────────── */
 .officer-charts-row {
   display: grid;
   grid-template-columns: 1fr 1.2fr 1.2fr;
@@ -94,26 +25,65 @@
   margin-bottom: 20px;
 }
 
+/* ── Status Select Dropdown ───────────────────────────────────── */
 .officer-status-select {
   padding: 6px 10px;
-  border: 1.5px solid var(--off-border);
+  border: 1.5px solid var(--border-solid);
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
-  background: var(--off-bg);
-  color: var(--off-text);
+  background: var(--bg-light);
+  color: var(--text);
   cursor: pointer;
   outline: none;
   transition: var(--transition);
 }
 
-.officer-theme .modal-box {
-  background: var(--off-panel);
-  border: 1px solid var(--off-border);
-  color: var(--off-text);
+/* ── Issue Cards Grid (for OfficerMyIssues) ───────────────────── */
+.officer-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
 }
-.officer-theme .modal-header { border-bottom-color: var(--off-border); }
-.officer-theme .modal-footer { border-top-color: var(--off-border); }
+.officer-issue-card {
+  background: var(--bg);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.officer-issue-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.officer-issue-card-top {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.officer-issue-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.officer-issue-cat {
+  font-size: 0.82rem;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.officer-issue-addr {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+.officer-issue-date {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
 
+/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .officer-charts-row { grid-template-columns: 1fr; }
+  .officer-cards-grid { grid-template-columns: 1fr; }
 }

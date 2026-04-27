@@ -1,9 +1,8 @@
 const Notification = require('../models/Notification');
 const Issue = require('../models/Issue');
+const User = require('../models/User');
 
-// @desc    Get all notifications for the logged-in user
-// @route   GET /api/notifications
-// @access  Private
+// Fetch all notifications belonging to the logged-in user, newest first
 const getMyNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ user: req.user._id })
@@ -19,9 +18,7 @@ const getMyNotifications = async (req, res) => {
   }
 };
 
-// @desc    Mark a single notification as read
-// @route   PUT /api/notifications/:id/read
-// @access  Private
+// Mark one notification as read (called when the user clicks on it)
 const markAsRead = async (req, res) => {
   try {
     const notif = await Notification.findOne({ _id: req.params.id, user: req.user._id });
@@ -37,9 +34,7 @@ const markAsRead = async (req, res) => {
   }
 };
 
-// @desc    Mark ALL notifications as read for current user
-// @route   PUT /api/notifications/read-all
-// @access  Private
+// Mark all of the current user's notifications as read at once
 const markAllRead = async (req, res) => {
   try {
     await Notification.updateMany({ user: req.user._id, isRead: false }, { isRead: true });
@@ -50,9 +45,7 @@ const markAllRead = async (req, res) => {
   }
 };
 
-// @desc    Delete a single notification
-// @route   DELETE /api/notifications/:id
-// @access  Private
+// Remove a single notification permanently
 const deleteNotification = async (req, res) => {
   try {
     await Notification.findOneAndDelete({ _id: req.params.id, user: req.user._id });
@@ -63,7 +56,9 @@ const deleteNotification = async (req, res) => {
   }
 };
 
-// Helper: create a notification (called internally by other controllers)
+// ── Internal helpers (used by other controllers, not exposed as routes) ───────
+
+// Send a notification to a single user
 const createNotification = async (userId, message, type = 'system', issueId = null, issueTitle = '') => {
   try {
     await Notification.create({ user: userId, message, type, issueId, issueTitle });
@@ -72,4 +67,51 @@ const createNotification = async (userId, message, type = 'system', issueId = nu
   }
 };
 
-module.exports = { getMyNotifications, markAsRead, markAllRead, deleteNotification, createNotification };
+// Send a notification to every block officer assigned to a specific block.
+// This is called when a citizen creates a new issue so the relevant
+// officer(s) are immediately aware.
+const notifyOfficersInBlock = async (block, message, type = 'new_issue', issueId = null, issueTitle = '') => {
+  try {
+    // Find all users with the blockofficer role whose block field matches
+    const officers = await User.find({ role: 'blockofficer', block });
+    for (const officer of officers) {
+      await Notification.create({
+        user: officer._id,
+        message,
+        type,
+        issueId,
+        issueTitle
+      });
+    }
+  } catch (err) {
+    console.error('Failed to notify officers in block:', err.message);
+  }
+};
+
+// Send a notification to all admin users (used for important system events)
+const notifyAllAdmins = async (message, type = 'system', issueId = null, issueTitle = '') => {
+  try {
+    const admins = await User.find({ role: 'admin' });
+    for (const admin of admins) {
+      await Notification.create({
+        user: admin._id,
+        message,
+        type,
+        issueId,
+        issueTitle
+      });
+    }
+  } catch (err) {
+    console.error('Failed to notify admins:', err.message);
+  }
+};
+
+module.exports = {
+  getMyNotifications,
+  markAsRead,
+  markAllRead,
+  deleteNotification,
+  createNotification,
+  notifyOfficersInBlock,
+  notifyAllAdmins
+};

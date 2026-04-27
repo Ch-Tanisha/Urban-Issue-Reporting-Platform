@@ -48,7 +48,7 @@ export default function MyReports({ issues, onDelete, onNew, onRefresh }) {
       </div>
 
       {/* Filters */}
-      <div className="filters-bar" style={{ background:'white', borderRadius:16, padding:20, border:'1px solid #e2e8f0', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
+      <div className="filters-bar" style={{ background:'var(--bg)', borderRadius:16, padding:20, border:'1px solid var(--border-solid)', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
         <div style={{ position:'relative', flex:'1 1 240px' }}>
           <input type="search" placeholder="Search by title or ID…"
             value={search} onChange={e => setSearch(e.target.value)} 
@@ -142,12 +142,12 @@ export default function MyReports({ issues, onDelete, onNew, onRefresh }) {
             </div>
             <div>
               <p style={{ color:'var(--text-light)', fontSize:'0.75rem', fontWeight:600, textTransform:'uppercase', marginBottom:6 }}>Description</p>
-              <p style={{ color:'var(--text)', lineHeight:1.6, background:'#f8fafc', padding:14, borderRadius:10, border:'1px solid #e2e8f0' }}>{detailModal.description}</p>
+              <p style={{ color:'var(--text)', lineHeight:1.6, background:'var(--bg-light)', padding:14, borderRadius:10, border:'1px solid var(--border-solid)' }}>{detailModal.description}</p>
             </div>
             {detailModal.photo && (
               <div>
                 <p style={{ color:'var(--text-light)', fontSize:'0.75rem', fontWeight:600, textTransform:'uppercase', marginBottom:6 }}>Attached Photo</p>
-                <img src={`http://localhost:5000${detailModal.photo}`} alt="Issue" style={{ maxWidth:'100%', borderRadius:10, border:'1px solid #e2e8f0' }} />
+                <img src={`http://localhost:5000${detailModal.photo}`} alt="Issue" style={{ maxWidth:'100%', borderRadius:10, border:'1px solid var(--border-solid)' }} />
               </div>
             )}
           </div>

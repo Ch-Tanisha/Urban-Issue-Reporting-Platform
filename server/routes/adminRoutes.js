@@ -8,9 +8,12 @@ const {
   deleteOfficer,
   getAllCitizens,
   deleteCitizen,
-  deleteAllCitizens
+  deleteAllCitizens,
+  createAdmin,
+  seedAdmin
 } = require('../controllers/adminController');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
+
 
 // GET  /api/admin/analytics          — Platform-wide analytics + monthly trend
 router.get('/analytics', protect, adminOnly, getAnalytics);
@@ -36,4 +39,11 @@ router.delete('/citizens/all', protect, adminOnly, deleteAllCitizens);
 // DELETE /api/admin/citizens/:id     — Delete a citizen account + their issues
 router.delete('/citizens/:id', protect, adminOnly, deleteCitizen);
 
+// POST /api/admin/create-admin       — Create a new admin account (admin only)
+router.post('/create-admin', protect, adminOnly, createAdmin);
+
+// POST /api/admin/seed-admin         — One-time seed for first admin (auto-locks after use)
+router.post('/seed-admin', seedAdmin);
+
 module.exports = router;
+

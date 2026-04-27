@@ -1,0 +1,1328 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R 26 0 R 28 0 R 30 0 R 32 0 R] /Count 14 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 3686 >>
+stream
+BT
+/F2 22 Tf
+1 0 0 1 48.00 794.00 Tm (UrbanVoice Project Viva Guide) Tj
+/F1 10 Tf
+1 0 0 1 48.00 755.00 Tm (Prepared for a 3-member group viva.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 734.00 Tm (1. Project Overview) Tj
+/F1 10 Tf
+1 0 0 1 48.00 705.00 Tm (UrbanVoice is an urban issue reporting platform. Citizens can report civic problems such as) Tj
+/F1 10 Tf
+1 0 0 1 48.00 691.00 Tm (road damage, garbage, water supply issues, electricity problems, drainage, and public safety) Tj
+/F1 10 Tf
+1 0 0 1 48.00 677.00 Tm (concerns. Block officers see issues from their assigned block and update progress. Admins) Tj
+/F1 10 Tf
+1 0 0 1 48.00 663.00 Tm (manage the whole platform, officers, citizens, and analytics.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 642.00 Tm (The project follows a MERN-style flow:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 621.00 Tm (- Frontend: React + Vite in client/) Tj
+/F1 10 Tf
+1 0 0 1 62.00 606.00 Tm (- Backend: Node.js + Express in server/) Tj
+/F1 10 Tf
+1 0 0 1 62.00 591.00 Tm (- Database: MongoDB with Mongoose models) Tj
+/F1 10 Tf
+1 0 0 1 62.00 576.00 Tm (- Authentication: JWT tokens, role-based routes, and session storage on frontend) Tj
+/F1 10 Tf
+1 0 0 1 62.00 561.00 Tm (- File uploads: Multer stores issue photos in server/uploads) Tj
+/F1 10 Tf
+1 0 0 1 48.00 541.00 Tm (Main user roles:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 520.00 Tm (- Citizen: Register/login, submit issue, view own reports, receive notifications.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 505.00 Tm (- Block Officer: Login, view assigned block issues, update status, flag duplicates, view) Tj
+/F1 10 Tf
+1 0 0 1 62.00 491.00 Tm (block analytics.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 476.00 Tm (- Admin: Login, view all issues, update/delete issues, manage officers/citizens, view) Tj
+/F1 10 Tf
+1 0 0 1 62.00 462.00 Tm (platform analytics.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 442.00 Tm (2. High-Level Request Flow) Tj
+/F1 10 Tf
+1 0 0 1 48.00 413.00 Tm (Example: citizen reports an issue.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 392.00 Tm (1. User opens React app at http://localhost:5173.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 377.00 Tm (2. App.jsx routes user to /auth, /citizen, /officer, or /admin.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 362.00 Tm (3. User logs in through AuthPage.jsx.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 347.00 Tm (4. Frontend sends request through client/src/api/axios.js to backend API at) Tj
+/F1 10 Tf
+1 0 0 1 62.00 333.00 Tm (http://localhost:5000.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 318.00 Tm (5. Backend route receives request, for example POST /api/auth/login/citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 303.00 Tm (6. Controller validates user from MongoDB, checks password using bcrypt, creates JWT, and) Tj
+/F1 10 Tf
+1 0 0 1 62.00 289.00 Tm (returns user data.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 274.00 Tm (7. Frontend stores token, role, and user in sessionStorage.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 259.00 Tm (8. Protected dashboard pages attach token to API calls using Axios interceptor.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 244.00 Tm (9. Backend protect middleware verifies token and loads req.user.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 229.00 Tm (10. Role guards such as citizenOnly, officerOnly, and adminOnly allow or block access.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 214.00 Tm (11. Controller performs database operation using Mongoose models.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 199.00 Tm (12. Response returns JSON to React, and React updates UI state.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 179.00 Tm (3. Frontend Code Flow) Tj
+/F2 12 Tf
+1 0 0 1 48.00 150.00 Tm (Entry Files) Tj
+/F1 10 Tf
+1 0 0 1 48.00 126.00 Tm (client/src/main.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 105.00 Tm (- Mounts the React app into the browser.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 90.00 Tm (- Loads App.jsx.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 70.00 Tm (client/src/App.jsx) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 3397 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- Defines application routes using react-router-dom.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (- Public routes:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 764.00 Tm (  - / -> LandingPage) Tj
+/F1 10 Tf
+1 0 0 1 48.00 748.00 Tm (  - /auth -> AuthPage) Tj
+/F1 10 Tf
+1 0 0 1 62.00 732.00 Tm (- Protected routes:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 717.00 Tm (  - /citizen/* -> CitizenDashboard) Tj
+/F1 10 Tf
+1 0 0 1 48.00 701.00 Tm (  - /officer/* -> OfficerDashboard) Tj
+/F1 10 Tf
+1 0 0 1 48.00 685.00 Tm (  - /admin/* -> AdminDashboard) Tj
+/F1 10 Tf
+1 0 0 1 62.00 669.00 Tm (- ProtectedRoute checks sessionStorage for uv_token and uv_role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 654.00 Tm (- It redirects users to the correct dashboard if they try to open a wrong role page.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 639.00 Tm (- On refresh, it calls GET /api/auth/me to verify the token.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 619.00 Tm (client/src/api/axios.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 598.00 Tm (- Creates one shared Axios instance.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 583.00 Tm (- Base URL is http://localhost:5000.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 568.00 Tm (- Adds JWT from sessionStorage as Authorization: Bearer <token>.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 553.00 Tm (- Sends cookies using withCredentials: true.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 538.00 Tm (- If token validation fails on auth endpoints, it clears session and redirects to login.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 518.00 Tm (Authentication Page) Tj
+/F1 10 Tf
+1 0 0 1 48.00 494.00 Tm (client/src/pages/AuthPage.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 473.00 Tm (- Handles login, signup, forgot password, and reset password.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 458.00 Tm (- Login has role-specific endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 443.00 Tm (  - Citizen -> POST /api/auth/login/citizen) Tj
+/F1 10 Tf
+1 0 0 1 48.00 427.00 Tm (  - Officer -> POST /api/auth/login/officer) Tj
+/F1 10 Tf
+1 0 0 1 48.00 411.00 Tm (  - Admin -> POST /api/auth/login/admin) Tj
+/F1 10 Tf
+1 0 0 1 62.00 395.00 Tm (- Signup is citizen-only in the UI.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 380.00 Tm (- Form validation happens before sending API requests.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 365.00 Tm (- On successful login/signup, it stores:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 350.00 Tm (  - uv_token) Tj
+/F1 10 Tf
+1 0 0 1 48.00 334.00 Tm (  - uv_role) Tj
+/F1 10 Tf
+1 0 0 1 48.00 318.00 Tm (  - uv_user) Tj
+/F1 10 Tf
+1 0 0 1 62.00 302.00 Tm (- Then it navigates to the matching dashboard.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 282.00 Tm (Citizen Dashboard) Tj
+/F1 10 Tf
+1 0 0 1 48.00 258.00 Tm (client/src/pages/citizen/CitizenDashboard.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 237.00 Tm (- Validates that the logged-in user is a citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 222.00 Tm (- Fetches citizen's issues using GET /api/issues/my.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 207.00 Tm (- Shows four main views:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 192.00 Tm (  - Dashboard home) Tj
+/F1 10 Tf
+1 0 0 1 48.00 176.00 Tm (  - Report issue) Tj
+/F1 10 Tf
+1 0 0 1 48.00 160.00 Tm (  - My reports) Tj
+/F1 10 Tf
+1 0 0 1 48.00 144.00 Tm (  - Profile) Tj
+/F1 10 Tf
+1 0 0 1 62.00 128.00 Tm (- addIssue\(\) builds FormData and posts it to POST /api/issues/create.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 113.00 Tm (- The issue photo is sent as multipart form data.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 93.00 Tm (client/src/pages/citizen/ReportIssue.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 72.00 Tm (- Issue submission form.) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 3437 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- Collects title, category, priority, block, address, coordinates, date, time, description,) Tj
+/F1 10 Tf
+1 0 0 1 62.00 780.00 Tm (and photo.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 765.00 Tm (- Validates important fields before submit.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 750.00 Tm (- Sends form data upward to CitizenDashboard.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 730.00 Tm (client/src/pages/citizen/MyReports.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 709.00 Tm (- Displays issues reported by the current citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 694.00 Tm (- Provides filters by status, category, priority, search, and sorting.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 679.00 Tm (- Opens a modal for full report details and attached photo.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 659.00 Tm (Officer Dashboard) Tj
+/F1 10 Tf
+1 0 0 1 48.00 635.00 Tm (client/src/pages/blockofficer/OfficerDashboard.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 614.00 Tm (- Validates that the user role is blockofficer.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 599.00 Tm (- Fetches officer profile from GET /api/block/profile.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 584.00 Tm (- Fetches assigned block issues from GET /api/block/issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 569.00 Tm (- Allows status update through PUT /api/issues/:id/status.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 554.00 Tm (- Allows duplicate flag toggle through PUT /api/issues/:id/duplicate.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 534.00 Tm (client/src/pages/blockofficer/OfficerMyIssues.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 513.00 Tm (- Shows issues that are already In Progress or Resolved.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 498.00 Tm (- Provides status dropdown for officer workflow.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 483.00 Tm (- Shows citizen contact details for follow-up.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 463.00 Tm (client/src/pages/blockofficer/OfficerAnalytics.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 442.00 Tm (- Displays block-level issue analytics from the issues available to that officer.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 422.00 Tm (Admin Dashboard) Tj
+/F1 10 Tf
+1 0 0 1 48.00 398.00 Tm (client/src/pages/admin/AdminDashboard.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 377.00 Tm (- Validates admin role using GET /api/auth/me.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 362.00 Tm (- Fetches all issues using GET /api/issues/all.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 347.00 Tm (- Admin can:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 332.00 Tm (  - View dashboard summary) Tj
+/F1 10 Tf
+1 0 0 1 48.00 316.00 Tm (  - Manage all reported issues) Tj
+/F1 10 Tf
+1 0 0 1 48.00 300.00 Tm (  - Manage officers) Tj
+/F1 10 Tf
+1 0 0 1 48.00 284.00 Tm (  - View analytics) Tj
+/F1 10 Tf
+1 0 0 1 48.00 268.00 Tm (  - View profile) Tj
+/F1 10 Tf
+1 0 0 1 48.00 247.00 Tm (client/src/pages/admin/AdminIssues.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 226.00 Tm (- Shows all platform issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 211.00 Tm (- Supports filtering by status, block, category, priority, and search.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 196.00 Tm (- Admin can change status, mark resolved, view details, or delete issues.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 176.00 Tm (client/src/pages/admin/AdminOfficers.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 155.00 Tm (- Manages block officers.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 140.00 Tm (- Connects to admin officer APIs for listing, creating, updating, and deleting officers.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 120.00 Tm (Shared Components) Tj
+/F1 10 Tf
+1 0 0 1 48.00 96.00 Tm (Sidebar.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 75.00 Tm (- Common dashboard navigation for all roles.) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 2862 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 48.00 794.00 Tm (NotificationBell.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 773.00 Tm (- Fetches notifications from GET /api/notifications.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 758.00 Tm (- Polls every 30 seconds.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 743.00 Tm (- Shows unread count.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 728.00 Tm (- Supports mark one read, mark all read, and delete notification.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 708.00 Tm (StatusBadge.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 687.00 Tm (- Displays consistent status and priority labels.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 667.00 Tm (Modal.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 646.00 Tm (- Reusable popup component for details and confirmations.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 626.00 Tm (ThemeToggle.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 605.00 Tm (- Handles light/dark theme switching.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 585.00 Tm (4. Backend Code Flow) Tj
+/F2 12 Tf
+1 0 0 1 48.00 556.00 Tm (Server Entry Point) Tj
+/F1 10 Tf
+1 0 0 1 48.00 532.00 Tm (server/server.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 511.00 Tm (- Loads environment variables with dotenv.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 496.00 Tm (- Creates Express app.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 481.00 Tm (- Enables CORS for frontend origin http://localhost:5173.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 466.00 Tm (- Parses cookies using cookie-parser.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 451.00 Tm (- Parses JSON and URL encoded request bodies.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 436.00 Tm (- Configures Multer for issue photo uploads:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 421.00 Tm (  - Destination: server/uploads) Tj
+/F1 10 Tf
+1 0 0 1 48.00 405.00 Tm (  - Allowed: JPG, JPEG, PNG, WEBP) Tj
+/F1 10 Tf
+1 0 0 1 48.00 389.00 Tm (  - Max size: 5 MB) Tj
+/F1 10 Tf
+1 0 0 1 62.00 373.00 Tm (- Serves uploaded images at /uploads.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 358.00 Tm (- Mounts route groups:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 343.00 Tm (  - /api/auth) Tj
+/F1 10 Tf
+1 0 0 1 48.00 327.00 Tm (  - /api/issues) Tj
+/F1 10 Tf
+1 0 0 1 48.00 311.00 Tm (  - /api/admin) Tj
+/F1 10 Tf
+1 0 0 1 48.00 295.00 Tm (  - /api/block) Tj
+/F1 10 Tf
+1 0 0 1 48.00 279.00 Tm (  - /api/notifications) Tj
+/F1 10 Tf
+1 0 0 1 62.00 263.00 Tm (- Connects to MongoDB through connectDB\(\).) Tj
+/F1 10 Tf
+1 0 0 1 62.00 248.00 Tm (- Starts server on port 5000 by default.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 228.00 Tm (Database Connection) Tj
+/F1 10 Tf
+1 0 0 1 48.00 204.00 Tm (server/config/db.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 183.00 Tm (- Connects Express backend to MongoDB.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 168.00 Tm (- Uses MongoDB URI from environment variables.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 148.00 Tm (Middleware) Tj
+/F1 10 Tf
+1 0 0 1 48.00 124.00 Tm (server/middleware/authMiddleware.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 103.00 Tm (- protect checks token from:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 88.00 Tm (  - Authorization: Bearer <token>) Tj
+/F1 10 Tf
+1 0 0 1 48.00 72.00 Tm (  - or uv_token cookie) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 2639 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- Decodes JWT to read role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (- Uses role-specific secret:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 764.00 Tm (  - Admin secret) Tj
+/F1 10 Tf
+1 0 0 1 48.00 748.00 Tm (  - Officer secret) Tj
+/F1 10 Tf
+1 0 0 1 48.00 732.00 Tm (  - Citizen secret) Tj
+/F1 10 Tf
+1 0 0 1 62.00 716.00 Tm (- Verifies token and loads user from database into req.user.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 701.00 Tm (- Role guards:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 686.00 Tm (  - adminOnly) Tj
+/F1 10 Tf
+1 0 0 1 48.00 670.00 Tm (  - officerOnly) Tj
+/F1 10 Tf
+1 0 0 1 48.00 654.00 Tm (  - citizenOnly) Tj
+/F1 10 Tf
+1 0 0 1 48.00 633.00 Tm (This is important for viva: frontend route protection is only for user experience; real) Tj
+/F1 10 Tf
+1 0 0 1 48.00 619.00 Tm (security is in backend middleware.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 598.00 Tm (5. Backend Models) Tj
+/F2 12 Tf
+1 0 0 1 48.00 569.00 Tm (User Model) Tj
+/F1 10 Tf
+1 0 0 1 48.00 545.00 Tm (server/models/User.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 524.00 Tm (Stores account data for all roles:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 503.00 Tm (- name) Tj
+/F1 10 Tf
+1 0 0 1 62.00 488.00 Tm (- email) Tj
+/F1 10 Tf
+1 0 0 1 62.00 473.00 Tm (- password) Tj
+/F1 10 Tf
+1 0 0 1 62.00 458.00 Tm (- phone) Tj
+/F1 10 Tf
+1 0 0 1 62.00 443.00 Tm (- role: citizen, blockofficer, or admin) Tj
+/F1 10 Tf
+1 0 0 1 62.00 428.00 Tm (- age, gender, address, city, pincode, block) Tj
+/F1 10 Tf
+1 0 0 1 62.00 413.00 Tm (- reset password token fields) Tj
+/F1 10 Tf
+1 0 0 1 62.00 398.00 Tm (- timestamps) Tj
+/F2 12 Tf
+1 0 0 1 48.00 378.00 Tm (Issue Model) Tj
+/F1 10 Tf
+1 0 0 1 48.00 354.00 Tm (server/models/Issue.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 333.00 Tm (Stores urban issue reports:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 312.00 Tm (- title and description) Tj
+/F1 10 Tf
+1 0 0 1 62.00 297.00 Tm (- category) Tj
+/F1 10 Tf
+1 0 0 1 62.00 282.00 Tm (- priority: High, Medium, Low) Tj
+/F1 10 Tf
+1 0 0 1 62.00 267.00 Tm (- address, coordinates, block) Tj
+/F1 10 Tf
+1 0 0 1 62.00 252.00 Tm (- status: Reported, In Progress, Resolved) Tj
+/F1 10 Tf
+1 0 0 1 62.00 237.00 Tm (- photo path) Tj
+/F1 10 Tf
+1 0 0 1 62.00 222.00 Tm (- reportedBy user reference) Tj
+/F1 10 Tf
+1 0 0 1 62.00 207.00 Tm (- citizen contact details) Tj
+/F1 10 Tf
+1 0 0 1 62.00 192.00 Tm (- duplicate flag) Tj
+/F1 10 Tf
+1 0 0 1 62.00 177.00 Tm (- reported date) Tj
+/F1 10 Tf
+1 0 0 1 62.00 162.00 Tm (- timestamps) Tj
+/F2 12 Tf
+1 0 0 1 48.00 142.00 Tm (BlockOfficer Model) Tj
+/F1 10 Tf
+1 0 0 1 48.00 118.00 Tm (server/models/BlockOfficer.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 97.00 Tm (Stores officer profile:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 76.00 Tm (- name) Tj
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 2771 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- email) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (- phone) Tj
+/F1 10 Tf
+1 0 0 1 62.00 764.00 Tm (- assignedBlock) Tj
+/F1 10 Tf
+1 0 0 1 62.00 749.00 Tm (- linked userId) Tj
+/F1 10 Tf
+1 0 0 1 62.00 734.00 Tm (- avatar initials) Tj
+/F2 12 Tf
+1 0 0 1 48.00 714.00 Tm (Notification Model) Tj
+/F1 10 Tf
+1 0 0 1 48.00 690.00 Tm (server/models/Notification.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 669.00 Tm (Stores notifications for users:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 648.00 Tm (- user reference) Tj
+/F1 10 Tf
+1 0 0 1 62.00 633.00 Tm (- message) Tj
+/F1 10 Tf
+1 0 0 1 62.00 618.00 Tm (- type: status_update, new_issue, system, duplicate_flag) Tj
+/F1 10 Tf
+1 0 0 1 62.00 603.00 Tm (- isRead) Tj
+/F1 10 Tf
+1 0 0 1 62.00 588.00 Tm (- issueId reference) Tj
+/F1 10 Tf
+1 0 0 1 62.00 573.00 Tm (- issueTitle) Tj
+/F1 10 Tf
+1 0 0 1 62.00 558.00 Tm (- timestamps) Tj
+/F2 15 Tf
+1 0 0 1 48.00 538.00 Tm (6. Backend Routes and Controllers) Tj
+/F2 12 Tf
+1 0 0 1 48.00 509.00 Tm (Auth Routes) Tj
+/F1 10 Tf
+1 0 0 1 48.00 485.00 Tm (server/routes/authRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 464.00 Tm (Important endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 443.00 Tm (- POST /api/auth/register) Tj
+/F1 10 Tf
+1 0 0 1 62.00 428.00 Tm (- POST /api/auth/login/citizen) Tj
+/F1 10 Tf
+1 0 0 1 62.00 413.00 Tm (- POST /api/auth/login/officer) Tj
+/F1 10 Tf
+1 0 0 1 62.00 398.00 Tm (- POST /api/auth/login/admin) Tj
+/F1 10 Tf
+1 0 0 1 62.00 383.00 Tm (- POST /api/auth/login) Tj
+/F1 10 Tf
+1 0 0 1 62.00 368.00 Tm (- GET /api/auth/me) Tj
+/F1 10 Tf
+1 0 0 1 62.00 353.00 Tm (- PUT /api/auth/profile) Tj
+/F1 10 Tf
+1 0 0 1 62.00 338.00 Tm (- PUT /api/auth/password) Tj
+/F1 10 Tf
+1 0 0 1 62.00 323.00 Tm (- POST /api/auth/forgot-password) Tj
+/F1 10 Tf
+1 0 0 1 62.00 308.00 Tm (- POST /api/auth/reset-password) Tj
+/F1 10 Tf
+1 0 0 1 62.00 293.00 Tm (- POST /api/auth/logout) Tj
+/F1 10 Tf
+1 0 0 1 48.00 273.00 Tm (server/controllers/authController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 252.00 Tm (Main logic:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 231.00 Tm (- Registers citizens and officers, but blocks public admin registration.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 216.00 Tm (- Hashes passwords using bcrypt.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 201.00 Tm (- Checks duplicate email.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 186.00 Tm (- Performs role-specific login.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 171.00 Tm (- Generates JWT with user id and role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 156.00 Tm (- Sets uv_token cookie.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 141.00 Tm (- Supports forgot/reset password using secure token hashing.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 121.00 Tm (server/controllers/userController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 100.00 Tm (- Updates user profile.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 85.00 Tm (- Changes password after verifying current password.) Tj
+ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Length 3092 >>
+stream
+BT
+/F2 12 Tf
+1 0 0 1 48.00 794.00 Tm (Issue Routes) Tj
+/F1 10 Tf
+1 0 0 1 48.00 770.00 Tm (server/routes/issueRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 749.00 Tm (Important endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 728.00 Tm (- POST /api/issues/create - citizen creates issue) Tj
+/F1 10 Tf
+1 0 0 1 62.00 713.00 Tm (- GET /api/issues/my - citizen gets own issues) Tj
+/F1 10 Tf
+1 0 0 1 62.00 698.00 Tm (- GET /api/issues/all - admin gets all issues) Tj
+/F1 10 Tf
+1 0 0 1 62.00 683.00 Tm (- GET /api/issues/block - officer gets block issues) Tj
+/F1 10 Tf
+1 0 0 1 62.00 668.00 Tm (- PUT /api/issues/:id/status - officer/admin updates status) Tj
+/F1 10 Tf
+1 0 0 1 62.00 653.00 Tm (- PUT /api/issues/:id/duplicate - officer/admin toggles duplicate flag) Tj
+/F1 10 Tf
+1 0 0 1 62.00 638.00 Tm (- DELETE /api/issues/:id - admin deletes issue) Tj
+/F1 10 Tf
+1 0 0 1 48.00 618.00 Tm (server/controllers/issueController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 597.00 Tm (Main logic:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 576.00 Tm (- Creates issue and stores optional photo path.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 561.00 Tm (- Saves citizen name, email, phone, and block.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 546.00 Tm (- Creates notification when issue is submitted.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 531.00 Tm (- Fetches citizen's own issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 516.00 Tm (- Fetches officer's assigned block issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 501.00 Tm (- Updates status and notifies citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 486.00 Tm (- Toggles duplicate flag and notifies citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 471.00 Tm (- Filters all issues for admin.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 456.00 Tm (- Deletes issue for admin.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 436.00 Tm (Block Officer Routes) Tj
+/F1 10 Tf
+1 0 0 1 48.00 412.00 Tm (server/routes/blockRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 391.00 Tm (Important endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 370.00 Tm (- GET /api/block/profile) Tj
+/F1 10 Tf
+1 0 0 1 62.00 355.00 Tm (- GET /api/block/issues) Tj
+/F1 10 Tf
+1 0 0 1 62.00 340.00 Tm (- GET /api/block/analytics) Tj
+/F1 10 Tf
+1 0 0 1 48.00 320.00 Tm (server/controllers/blockController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 299.00 Tm (Main logic:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 278.00 Tm (- Gets officer profile from BlockOfficer.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 263.00 Tm (- Falls back to user data if officer profile does not exist.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 248.00 Tm (- Gets issues for assigned block.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 233.00 Tm (- Calculates block-level analytics.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 213.00 Tm (Admin Routes) Tj
+/F1 10 Tf
+1 0 0 1 48.00 189.00 Tm (server/routes/adminRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 168.00 Tm (Important endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 147.00 Tm (- GET /api/admin/analytics) Tj
+/F1 10 Tf
+1 0 0 1 62.00 132.00 Tm (- GET /api/admin/officers) Tj
+/F1 10 Tf
+1 0 0 1 62.00 117.00 Tm (- POST /api/admin/officers) Tj
+/F1 10 Tf
+1 0 0 1 62.00 102.00 Tm (- PUT /api/admin/officers/:id) Tj
+/F1 10 Tf
+1 0 0 1 62.00 87.00 Tm (- DELETE /api/admin/officers/:id) Tj
+/F1 10 Tf
+1 0 0 1 62.00 72.00 Tm (- GET /api/admin/citizens) Tj
+ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 17 0 R >>
+endobj
+19 0 obj
+<< /Length 3184 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- DELETE /api/admin/citizens/:id) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (- DELETE /api/admin/citizens/all) Tj
+/F1 10 Tf
+1 0 0 1 62.00 764.00 Tm (- POST /api/admin/create-admin) Tj
+/F1 10 Tf
+1 0 0 1 62.00 749.00 Tm (- POST /api/admin/seed-admin) Tj
+/F1 10 Tf
+1 0 0 1 48.00 729.00 Tm (server/controllers/adminController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 708.00 Tm (Main logic:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 687.00 Tm (- Calculates platform analytics:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 672.00 Tm (  - total issues) Tj
+/F1 10 Tf
+1 0 0 1 48.00 656.00 Tm (  - status counts) Tj
+/F1 10 Tf
+1 0 0 1 48.00 640.00 Tm (  - block-wise count) Tj
+/F1 10 Tf
+1 0 0 1 48.00 624.00 Tm (  - category-wise count) Tj
+/F1 10 Tf
+1 0 0 1 48.00 608.00 Tm (  - priority count) Tj
+/F1 10 Tf
+1 0 0 1 48.00 592.00 Tm (  - monthly trend) Tj
+/F1 10 Tf
+1 0 0 1 48.00 576.00 Tm (  - total citizens and officers) Tj
+/F1 10 Tf
+1 0 0 1 62.00 560.00 Tm (- Lists, creates, updates, deletes block officers.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 545.00 Tm (- Self-heals officer profiles when a user has role blockofficer but no BlockOfficer profile.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 530.00 Tm (- Lists and deletes citizens.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 515.00 Tm (- Creates admin accounts from existing admin.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 500.00 Tm (- Seeds first admin only when no admin exists.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 480.00 Tm (Notification Routes) Tj
+/F1 10 Tf
+1 0 0 1 48.00 456.00 Tm (server/routes/notificationRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 435.00 Tm (Important endpoints:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 414.00 Tm (- GET /api/notifications) Tj
+/F1 10 Tf
+1 0 0 1 62.00 399.00 Tm (- PUT /api/notifications/:id/read) Tj
+/F1 10 Tf
+1 0 0 1 62.00 384.00 Tm (- PUT /api/notifications/read-all) Tj
+/F1 10 Tf
+1 0 0 1 62.00 369.00 Tm (- DELETE /api/notifications/:id) Tj
+/F1 10 Tf
+1 0 0 1 48.00 349.00 Tm (server/controllers/notificationController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 328.00 Tm (Main logic:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 307.00 Tm (- Gets latest 50 notifications for logged-in user.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 292.00 Tm (- Counts unread notifications.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 277.00 Tm (- Marks one notification as read.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 262.00 Tm (- Marks all as read.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 247.00 Tm (- Deletes notification.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 232.00 Tm (- Provides createNotification\(\) helper used by issue controller.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 212.00 Tm (7. Complete Role-Based Flow) Tj
+/F2 12 Tf
+1 0 0 1 48.00 183.00 Tm (Citizen Flow) Tj
+/F1 10 Tf
+1 0 0 1 62.00 159.00 Tm (1. Citizen signs up or logs in.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 144.00 Tm (2. Frontend stores token and role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 129.00 Tm (3. Citizen dashboard validates role with /api/auth/me.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 114.00 Tm (4. Citizen reports an issue from ReportIssue.jsx.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 99.00 Tm (5. CitizenDashboard.jsx sends multipart form data to /api/issues/create.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 84.00 Tm (6. Backend verifies token using protect and checks role using citizenOnly.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 69.00 Tm (7. Multer saves optional photo.) Tj
+ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 19 0 R >>
+endobj
+21 0 obj
+<< /Length 3665 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (8. createIssue stores issue in MongoDB.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (9. Backend creates notification: issue submitted.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 764.00 Tm (10. Citizen sees issue in MyReports.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 749.00 Tm (11. Later, if officer/admin updates status, citizen receives notification.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 729.00 Tm (Block Officer Flow) Tj
+/F1 10 Tf
+1 0 0 1 62.00 705.00 Tm (1. Officer logs in through officer login endpoint.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 690.00 Tm (2. Backend confirms user role is blockofficer.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 675.00 Tm (3. Officer dashboard fetches profile and assigned block.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 660.00 Tm (4. Officer sees only issues from assigned block.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 645.00 Tm (5. Officer changes issue status to In Progress or Resolved.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 630.00 Tm (6. Backend updates issue status.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 615.00 Tm (7. Backend creates notification for citizen.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 600.00 Tm (8. Officer can also flag issue as duplicate.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 585.00 Tm (9. Officer analytics show counts for assigned block.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 565.00 Tm (Admin Flow) Tj
+/F1 10 Tf
+1 0 0 1 62.00 541.00 Tm (1. Admin logs in through admin login endpoint.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 526.00 Tm (2. Backend confirms role is admin.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 511.00 Tm (3. Admin dashboard fetches all issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 496.00 Tm (4. Admin can filter, update, resolve, or delete issues.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 481.00 Tm (5. Admin manages officers and citizens.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 466.00 Tm (6. Admin analytics summarize full platform data.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 451.00 Tm (7. Admin can create other admin accounts.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 436.00 Tm (8. First admin can be seeded only once through seed-admin.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 416.00 Tm (8. Important Security Points for Viva) Tj
+/F1 10 Tf
+1 0 0 1 62.00 387.00 Tm (- Passwords are never stored as plain text; they are hashed using bcrypt.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 372.00 Tm (- JWT tokens identify user id and role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 357.00 Tm (- Backend validates every protected request using protect.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 342.00 Tm (- Role guards prevent unauthorized access even if someone changes frontend route manually.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 327.00 Tm (- Admin registration is blocked from public signup.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 312.00 Tm (- First admin seed endpoint locks after an admin already exists.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 297.00 Tm (- File upload accepts only image MIME types and limits size to 5 MB.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 282.00 Tm (- Forgot password stores hashed reset token, not raw token.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 267.00 Tm (- Axios sends token with every API request.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 252.00 Tm (- sessionStorage is used so different tabs can hold separate sessions.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 232.00 Tm (9. Suggested 3-Member Work Division) Tj
+/F2 12 Tf
+1 0 0 1 48.00 203.00 Tm (Member 1: Frontend and User Experience) Tj
+/F1 10 Tf
+1 0 0 1 48.00 179.00 Tm (Can say:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 158.00 Tm ("I handled the React frontend, routing, dashboards, forms, reusable components, and user) Tj
+/F1 10 Tf
+1 0 0 1 48.00 144.00 Tm (experience.") Tj
+/F1 10 Tf
+1 0 0 1 48.00 123.00 Tm (Files to mention:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 102.00 Tm (- client/src/App.jsx) Tj
+/F1 10 Tf
+1 0 0 1 62.00 87.00 Tm (- client/src/api/axios.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 72.00 Tm (- client/src/pages/AuthPage.jsx) Tj
+ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 21 0 R >>
+endobj
+23 0 obj
+<< /Length 3639 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 62.00 794.00 Tm (- client/src/pages/citizen/*) Tj
+/F1 10 Tf
+1 0 0 1 62.00 779.00 Tm (- client/src/pages/blockofficer/*) Tj
+/F1 10 Tf
+1 0 0 1 62.00 764.00 Tm (- client/src/pages/admin/*) Tj
+/F1 10 Tf
+1 0 0 1 62.00 749.00 Tm (- client/src/components/*) Tj
+/F1 10 Tf
+1 0 0 1 62.00 734.00 Tm (- CSS files in client/src/styles and page folders) Tj
+/F1 10 Tf
+1 0 0 1 48.00 714.00 Tm (Responsibilities:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 693.00 Tm (- Built route structure for landing, auth, citizen, officer, and admin.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 678.00 Tm (- Implemented protected route behavior based on role.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 663.00 Tm (- Built login/signup/reset password UI.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 648.00 Tm (- Built citizen report form and my reports table.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 633.00 Tm (- Built officer and admin dashboards.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 618.00 Tm (- Added filters, modals, status badges, sidebar, notification bell, and theme toggle.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 603.00 Tm (- Connected frontend to backend through Axios.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 583.00 Tm (Strong viva line:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 562.00 Tm ("My part starts when the user interacts with the browser. I handle form validation, page) Tj
+/F1 10 Tf
+1 0 0 1 48.00 548.00 Tm (routing, dashboard state, API calls through Axios, and updating the UI based on backend) Tj
+/F1 10 Tf
+1 0 0 1 48.00 534.00 Tm (responses.") Tj
+/F2 12 Tf
+1 0 0 1 48.00 513.00 Tm (Member 2: Backend API, Authentication, and Security) Tj
+/F1 10 Tf
+1 0 0 1 48.00 489.00 Tm (Can say:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 468.00 Tm ("I handled the Express backend, authentication, route protection, user APIs, and server setup.") Tj
+/F1 10 Tf
+1 0 0 1 48.00 447.00 Tm (Files to mention:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 426.00 Tm (- server/server.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 411.00 Tm (- server/config/db.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 396.00 Tm (- server/middleware/authMiddleware.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 381.00 Tm (- server/routes/authRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 366.00 Tm (- server/controllers/authController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 351.00 Tm (- server/controllers/userController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 336.00 Tm (- server/models/User.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 316.00 Tm (Responsibilities:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 295.00 Tm (- Set up Express server, CORS, body parsing, cookie parsing, and route mounting.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 280.00 Tm (- Connected backend to MongoDB.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 265.00 Tm (- Implemented registration and role-based login.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 250.00 Tm (- Used bcrypt for password hashing.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 235.00 Tm (- Used JWT for authentication.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 220.00 Tm (- Added role-specific token secrets.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 205.00 Tm (- Built protect, adminOnly, officerOnly, and citizenOnly middleware.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 190.00 Tm (- Implemented profile update, password change, forgot password, and reset password.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 170.00 Tm (Strong viva line:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 149.00 Tm ("My part verifies who the user is and what they are allowed to do. Frontend guards improve) Tj
+/F1 10 Tf
+1 0 0 1 48.00 135.00 Tm (navigation, but the backend middleware is the real security layer.") Tj
+/F2 12 Tf
+1 0 0 1 48.00 114.00 Tm (Member 3: Issue Management, Admin, Officer, Notifications, and Database Models) Tj
+/F1 10 Tf
+1 0 0 1 48.00 90.00 Tm (Can say:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 69.00 Tm ("I handled issue lifecycle, officer/admin operations, notifications, analytics, and the main) Tj
+ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 23 0 R >>
+endobj
+25 0 obj
+<< /Length 3757 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 48.00 794.00 Tm (database schemas.") Tj
+/F1 10 Tf
+1 0 0 1 48.00 773.00 Tm (Files to mention:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 752.00 Tm (- server/models/Issue.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 737.00 Tm (- server/models/BlockOfficer.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 722.00 Tm (- server/models/Notification.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 707.00 Tm (- server/routes/issueRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 692.00 Tm (- server/controllers/issueController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 677.00 Tm (- server/routes/blockRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 662.00 Tm (- server/controllers/blockController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 647.00 Tm (- server/routes/adminRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 632.00 Tm (- server/controllers/adminController.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 617.00 Tm (- server/routes/notificationRoutes.js) Tj
+/F1 10 Tf
+1 0 0 1 62.00 602.00 Tm (- server/controllers/notificationController.js) Tj
+/F1 10 Tf
+1 0 0 1 48.00 582.00 Tm (Responsibilities:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 561.00 Tm (- Designed issue schema with status, priority, category, block, photo, and citizen data.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 546.00 Tm (- Implemented create issue, my issues, all issues, block issues, status update, duplicate) Tj
+/F1 10 Tf
+1 0 0 1 62.00 532.00 Tm (flag, and delete issue.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 517.00 Tm (- Implemented officer profile and block analytics.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 502.00 Tm (- Implemented admin analytics, officer management, citizen management, and admin creation.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 487.00 Tm (- Implemented notification model and notification APIs.) Tj
+/F1 10 Tf
+1 0 0 1 62.00 472.00 Tm (- Created notification triggers when issues are submitted, updated, or marked duplicate.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 452.00 Tm (Strong viva line:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 431.00 Tm ("My part handles the actual civic problem workflow: issue creation, assignment by block, status) Tj
+/F1 10 Tf
+1 0 0 1 48.00 417.00 Tm (tracking, admin oversight, and notifications to keep citizens updated.") Tj
+/F2 15 Tf
+1 0 0 1 48.00 396.00 Tm (10. Safe Way to Answer "Who Did What?") Tj
+/F1 10 Tf
+1 0 0 1 48.00 367.00 Tm (Use this answer:) Tj
+/F1 10 Tf
+1 0 0 1 48.00 346.00 Tm ("We divided the project by layers and workflows. Member 1 worked on React frontend and UI) Tj
+/F1 10 Tf
+1 0 0 1 48.00 332.00 Tm (integration. Member 2 worked on backend authentication, security, and user management. Member 3) Tj
+/F1 10 Tf
+1 0 0 1 48.00 318.00 Tm (worked on issue management, admin/officer modules, notifications, analytics, and database) Tj
+/F1 10 Tf
+1 0 0 1 48.00 304.00 Tm (models. We integrated together using API contracts, so each frontend screen maps to a backend) Tj
+/F1 10 Tf
+1 0 0 1 48.00 290.00 Tm (route.") Tj
+/F1 10 Tf
+1 0 0 1 48.00 269.00 Tm (If teacher asks for specific examples:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 248.00 Tm (- Frontend member: "Login page calls role-specific endpoints, and dashboards call APIs using) Tj
+/F1 10 Tf
+1 0 0 1 62.00 234.00 Tm (Axios.") Tj
+/F1 10 Tf
+1 0 0 1 62.00 219.00 Tm (- Backend auth member: "Login checks bcrypt password, creates JWT, and middleware protects) Tj
+/F1 10 Tf
+1 0 0 1 62.00 205.00 Tm (routes.") Tj
+/F1 10 Tf
+1 0 0 1 62.00 190.00 Tm (- Issue/admin member: "When status changes, issue is updated in MongoDB and notification is) Tj
+/F1 10 Tf
+1 0 0 1 62.00 176.00 Tm (created for citizen.") Tj
+/F2 15 Tf
+1 0 0 1 48.00 156.00 Tm (11. Common Viva Questions and Answers) Tj
+/F2 12 Tf
+1 0 0 1 48.00 127.00 Tm (What problem does the project solve?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 103.00 Tm (It provides a digital platform for citizens to report civic issues and for authorities to) Tj
+/F1 10 Tf
+1 0 0 1 48.00 89.00 Tm (track, manage, and resolve them block-wise.) Tj
+ET
+endstream
+endobj
+26 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 25 0 R >>
+endobj
+27 0 obj
+<< /Length 3575 >>
+stream
+BT
+/F2 12 Tf
+1 0 0 1 48.00 794.00 Tm (Why did you use React?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 770.00 Tm (React helps build reusable components like Sidebar, Modal, StatusBadge, and NotificationBell.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 756.00 Tm (It also manages dashboard state efficiently.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 735.00 Tm (Why did you use Express?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 711.00 Tm (Express gives a simple way to create REST APIs, middleware, route groups, and controller-based) Tj
+/F1 10 Tf
+1 0 0 1 48.00 697.00 Tm (backend logic.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 676.00 Tm (Why MongoDB?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 652.00 Tm (The data is document-based. Users, issues, officers, and notifications can be stored as) Tj
+/F1 10 Tf
+1 0 0 1 48.00 638.00 Tm (flexible JSON-like documents using Mongoose schemas.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 617.00 Tm (How is authentication handled?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 593.00 Tm (User logs in, backend verifies password with bcrypt, creates JWT, and frontend stores it in) Tj
+/F1 10 Tf
+1 0 0 1 48.00 579.00 Tm (sessionStorage. Axios sends the token in the Authorization header. Backend middleware verifies) Tj
+/F1 10 Tf
+1 0 0 1 48.00 565.00 Tm (token on protected routes.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 544.00 Tm (How are roles handled?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 520.00 Tm (Each user has a role in the User model. Frontend uses role for navigation, but backend role) Tj
+/F1 10 Tf
+1 0 0 1 48.00 506.00 Tm (guards enforce access control.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 485.00 Tm (Can a citizen access admin APIs?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 461.00 Tm (No. Even if they manually call the URL, backend adminOnly middleware checks req.user.role and) Tj
+/F1 10 Tf
+1 0 0 1 48.00 447.00 Tm (returns 403.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 426.00 Tm (What happens when a citizen submits an issue?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 402.00 Tm (React form sends data and optional image to backend. Backend verifies citizen, saves image) Tj
+/F1 10 Tf
+1 0 0 1 48.00 388.00 Tm (using Multer, creates issue in MongoDB, and creates a notification.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 367.00 Tm (How does the officer see only assigned block issues?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 343.00 Tm (Officer profile contains assigned block. Backend fetches only issues where issue.block matches) Tj
+/F1 10 Tf
+1 0 0 1 48.00 329.00 Tm (officer's assigned block.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 308.00 Tm (How are notifications generated?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 284.00 Tm (issueController calls createNotification\(\) after issue creation, status update, or duplicate) Tj
+/F1 10 Tf
+1 0 0 1 48.00 270.00 Tm (flag change. NotificationBell fetches and displays them.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 249.00 Tm (What is the role of Admin?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 225.00 Tm (Admin has platform-wide control: all issues, all officers, citizens, analytics, and admin) Tj
+/F1 10 Tf
+1 0 0 1 48.00 211.00 Tm (account creation.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 190.00 Tm (How do analytics work?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 166.00 Tm (Backend uses MongoDB counts and aggregation to calculate status counts, category counts, block-) Tj
+/F1 10 Tf
+1 0 0 1 48.00 152.00 Tm (wise issue counts, priority counts, monthly trends, citizens, and officers.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 131.00 Tm (How is image upload handled?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 107.00 Tm (Multer stores uploaded files in server/uploads. The backend saves photo path in Issue model.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 93.00 Tm (Frontend displays image using backend static /uploads route.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 72.00 Tm (What are the main collections?) Tj
+ET
+endstream
+endobj
+28 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 27 0 R >>
+endobj
+29 0 obj
+<< /Length 4827 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 48.00 794.00 Tm (Users, Issues, BlockOfficers, and Notifications.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 773.00 Tm (What is the difference between frontend and backend validation?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 749.00 Tm (Frontend validation gives quick feedback. Backend validation and middleware enforce real) Tj
+/F1 10 Tf
+1 0 0 1 48.00 735.00 Tm (security and data correctness.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 714.00 Tm (Why sessionStorage instead of localStorage?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 690.00 Tm (Session storage is tab-scoped. It helps avoid one tab's login session overwriting another role) Tj
+/F1 10 Tf
+1 0 0 1 48.00 676.00 Tm (session in a different tab.) Tj
+/F2 12 Tf
+1 0 0 1 48.00 655.00 Tm (What improvement can you add in future?) Tj
+/F1 10 Tf
+1 0 0 1 48.00 631.00 Tm (Maps integration, email/SMS notifications, officer assignment automation, real-time sockets,) Tj
+/F1 10 Tf
+1 0 0 1 48.00 617.00 Tm (complaint escalation, image compression, and deployment with environment-based configuration.) Tj
+/F2 15 Tf
+1 0 0 1 48.00 596.00 Tm (12. One-Minute Project Explanation) Tj
+/F1 10 Tf
+1 0 0 1 48.00 567.00 Tm ("UrbanVoice is a MERN-style urban issue reporting system with three roles: citizen, block) Tj
+/F1 10 Tf
+1 0 0 1 48.00 553.00 Tm (officer, and admin. A citizen can register, login, submit an issue with details and photo, and) Tj
+/F1 10 Tf
+1 0 0 1 48.00 539.00 Tm (track report status. The React frontend sends requests using Axios to an Express backend. The) Tj
+/F1 10 Tf
+1 0 0 1 48.00 525.00 Tm (backend authenticates users using bcrypt and JWT, protects APIs with role-based middleware, and) Tj
+/F1 10 Tf
+1 0 0 1 48.00 511.00 Tm (stores data in MongoDB through Mongoose models. Officers see issues only from their assigned) Tj
+/F1 10 Tf
+1 0 0 1 48.00 497.00 Tm (block and can update status or flag duplicates. Admins can view all issues, manage officers and) Tj
+/F1 10 Tf
+1 0 0 1 48.00 483.00 Tm (citizens, and see analytics. Notifications keep citizens updated whenever their issue is) Tj
+/F1 10 Tf
+1 0 0 1 48.00 469.00 Tm (submitted, updated, or marked duplicate.") Tj
+/F2 15 Tf
+1 0 0 1 48.00 448.00 Tm (13. Five-Minute Detailed Explanation) Tj
+/F1 10 Tf
+1 0 0 1 48.00 419.00 Tm ("The project begins from the React frontend. App.jsx defines public routes and protected role) Tj
+/F1 10 Tf
+1 0 0 1 48.00 405.00 Tm (dashboards. AuthPage.jsx handles signup, login, forgot password, and reset password. Once a) Tj
+/F1 10 Tf
+1 0 0 1 48.00 391.00 Tm (user logs in, the backend returns a JWT and user object. The frontend stores them in) Tj
+/F1 10 Tf
+1 0 0 1 48.00 377.00 Tm (sessionStorage. The shared Axios instance automatically attaches the token to all API calls.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 356.00 Tm (On the backend, server.js configures Express, CORS, cookies, JSON parsing, file uploads, static) Tj
+/F1 10 Tf
+1 0 0 1 48.00 342.00 Tm (upload serving, and route groups. The authentication middleware checks the JWT from headers or) Tj
+/F1 10 Tf
+1 0 0 1 48.00 328.00 Tm (cookies, verifies it using role-specific secrets, loads the user from MongoDB, and then role) Tj
+/F1 10 Tf
+1 0 0 1 48.00 314.00 Tm (guards decide whether the user is citizen, officer, or admin.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 293.00 Tm (For citizens, the main workflow is issue reporting. The report form collects category,) Tj
+/F1 10 Tf
+1 0 0 1 48.00 279.00 Tm (priority, block, address, description, and optional image. The backend creates an Issue) Tj
+/F1 10 Tf
+1 0 0 1 48.00 265.00 Tm (document and notification. Citizens can see their own reports and status updates.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 244.00 Tm (For block officers, the backend finds their assigned block and returns only issues from that) Tj
+/F1 10 Tf
+1 0 0 1 48.00 230.00 Tm (block. Officers update issue status from Reported to In Progress or Resolved, and can mark) Tj
+/F1 10 Tf
+1 0 0 1 48.00 216.00 Tm (duplicate reports. Each important change creates a notification for the citizen.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 195.00 Tm (For admins, the dashboard fetches all issues and provides management features. Admins can) Tj
+/F1 10 Tf
+1 0 0 1 48.00 181.00 Tm (update/delete issues, create or manage block officers, view citizens, and see analytics.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 167.00 Tm (Analytics are calculated using MongoDB counts and aggregation by status, block, category,) Tj
+/F1 10 Tf
+1 0 0 1 48.00 153.00 Tm (priority, and month.) Tj
+/F1 10 Tf
+1 0 0 1 48.00 132.00 Tm (The database has four main models: User, Issue, BlockOfficer, and Notification. These models) Tj
+/F1 10 Tf
+1 0 0 1 48.00 118.00 Tm (connect all workflows: User identifies the role, Issue stores civic reports, BlockOfficer maps) Tj
+/F1 10 Tf
+1 0 0 1 48.00 104.00 Tm (officers to blocks, and Notification stores citizen updates.") Tj
+/F2 15 Tf
+1 0 0 1 48.00 83.00 Tm (14. Quick File Map) Tj
+ET
+endstream
+endobj
+30 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 29 0 R >>
+endobj
+31 0 obj
+<< /Length 2202 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 48.00 794.00 Tm (Frontend:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 773.00 Tm (- client/src/App.jsx - routes and protected role navigation) Tj
+/F1 10 Tf
+1 0 0 1 62.00 758.00 Tm (- client/src/api/axios.js - API base URL and token interceptor) Tj
+/F1 10 Tf
+1 0 0 1 62.00 743.00 Tm (- client/src/pages/AuthPage.jsx - login, signup, forgot/reset password) Tj
+/F1 10 Tf
+1 0 0 1 62.00 728.00 Tm (- client/src/pages/citizen/CitizenDashboard.jsx - citizen container and API calls) Tj
+/F1 10 Tf
+1 0 0 1 62.00 713.00 Tm (- client/src/pages/citizen/ReportIssue.jsx - issue form) Tj
+/F1 10 Tf
+1 0 0 1 62.00 698.00 Tm (- client/src/pages/citizen/MyReports.jsx - citizen report list) Tj
+/F1 10 Tf
+1 0 0 1 62.00 683.00 Tm (- client/src/pages/blockofficer/OfficerDashboard.jsx - officer container and API calls) Tj
+/F1 10 Tf
+1 0 0 1 62.00 668.00 Tm (- client/src/pages/admin/AdminDashboard.jsx - admin container and API calls) Tj
+/F1 10 Tf
+1 0 0 1 62.00 653.00 Tm (- client/src/components/NotificationBell.jsx - notification UI) Tj
+/F1 10 Tf
+1 0 0 1 48.00 633.00 Tm (Backend:) Tj
+/F1 10 Tf
+1 0 0 1 62.00 612.00 Tm (- server/server.js - Express app setup) Tj
+/F1 10 Tf
+1 0 0 1 62.00 597.00 Tm (- server/config/db.js - MongoDB connection) Tj
+/F1 10 Tf
+1 0 0 1 62.00 582.00 Tm (- server/middleware/authMiddleware.js - JWT and role guards) Tj
+/F1 10 Tf
+1 0 0 1 62.00 567.00 Tm (- server/models/User.js - users and roles) Tj
+/F1 10 Tf
+1 0 0 1 62.00 552.00 Tm (- server/models/Issue.js - issue data) Tj
+/F1 10 Tf
+1 0 0 1 62.00 537.00 Tm (- server/models/BlockOfficer.js - officer block profile) Tj
+/F1 10 Tf
+1 0 0 1 62.00 522.00 Tm (- server/models/Notification.js - notification records) Tj
+/F1 10 Tf
+1 0 0 1 62.00 507.00 Tm (- server/controllers/authController.js - login/register/token/reset) Tj
+/F1 10 Tf
+1 0 0 1 62.00 492.00 Tm (- server/controllers/issueController.js - issue lifecycle) Tj
+/F1 10 Tf
+1 0 0 1 62.00 477.00 Tm (- server/controllers/adminController.js - admin management and analytics) Tj
+/F1 10 Tf
+1 0 0 1 62.00 462.00 Tm (- server/controllers/blockController.js - officer block data) Tj
+/F1 10 Tf
+1 0 0 1 62.00 447.00 Tm (- server/controllers/notificationController.js - notification APIs) Tj
+ET
+endstream
+endobj
+32 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 31 0 R >>
+endobj
+xref
+0 33
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000212 00000 n 
+0000000282 00000 n 
+0000000357 00000 n 
+0000004095 00000 n 
+0000004231 00000 n 
+0000007680 00000 n 
+0000007816 00000 n 
+0000011305 00000 n 
+0000011442 00000 n 
+0000014357 00000 n 
+0000014495 00000 n 
+0000017187 00000 n 
+0000017325 00000 n 
+0000020149 00000 n 
+0000020287 00000 n 
+0000023432 00000 n 
+0000023570 00000 n 
+0000026807 00000 n 
+0000026945 00000 n 
+0000030663 00000 n 
+0000030801 00000 n 
+0000034493 00000 n 
+0000034631 00000 n 
+0000038441 00000 n 
+0000038579 00000 n 
+0000042207 00000 n 
+0000042345 00000 n 
+0000047225 00000 n 
+0000047363 00000 n 
+0000049618 00000 n 
+trailer
+<< /Size 33 /Root 1 0 R >>
+startxref
+49756
+%%EOF

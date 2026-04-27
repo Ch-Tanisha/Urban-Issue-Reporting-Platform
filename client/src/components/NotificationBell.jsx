@@ -1,6 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
 import API from '../api/axios'
 
+/**
+ * NotificationBell — Dropdown notification center shown in every dashboard top bar.
+ * 
+ * Features:
+ *   - Polls GET /api/notifications every 30 seconds for new notifications
+ *   - Shows unread count badge on the bell icon
+ *   - Mark individual or all notifications as read
+ *   - Delete individual notifications
+ *   - Closes when clicking outside (useRef + mousedown listener)
+ * 
+ * Notification types: status_update, new_issue, duplicate_flag, system
+ * Each type maps to an emoji icon via the iconMap object.
+ * 
+ * Styling: Uses inline styles with CSS variable fallbacks for dark theme support.
+ */
 export default function NotificationBell() {
   const [open, setOpen]             = useState(false)
   const [notifications, setNotifs]  = useState([])
@@ -88,8 +103,9 @@ export default function NotificationBell() {
           position: 'relative',
           width: 40, height: 40,
           borderRadius: '50%',
-          border: '1.5px solid var(--border-solid)',
-          background: 'var(--bg)',
+          // Fallback colors ensure visibility on dark officer theme
+          border: '1.5px solid var(--border-solid, #e2e8f0)',
+          background: 'var(--bg, #ffffff)',
           cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '1.1rem',
@@ -119,11 +135,13 @@ export default function NotificationBell() {
         <div style={{
           position: 'absolute', top: 48, right: 0, zIndex: 9999,
           width: 360, maxHeight: 480,
-          background: 'var(--bg)', borderRadius: 16,
-          border: '1px solid var(--border-solid)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+          // Explicit fallback ensures dropdown is visible on dark themes
+          background: 'var(--bg, #ffffff)', borderRadius: 16,
+          border: '1px solid var(--border-solid, #e2e8f0)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
           overflow: 'hidden',
           animation: 'fadeInUp 0.2s ease',
+          color: 'var(--text, #0f172a)',
         }}>
           {/* Header */}
           <div style={{

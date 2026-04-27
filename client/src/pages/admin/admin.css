@@ -1,13 +1,23 @@
 /* ============================================================
-   UrbanVoice — Admin Dashboard (Premium Aesthetic)
+   UrbanVoice — Admin Dashboard CSS (Premium Light Aesthetic)
+   
+   The admin dashboard uses the default light theme from global.css.
+   This file contains admin-specific layout overrides:
+   - Top bar styling
+   - Officer cards grid
+   - Charts layout
+   - Issues table overrides
+   - Responsive breakpoints
    ============================================================ */
 
+/* ── Top Bar ──────────────────────────────────────────────────── */
 .admin-theme .top-bar {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-solid);
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
+/* Admin badge shown next to the notification bell */
 .admin-topbar-badge {
   padding: 6px 16px;
   border-radius: var(--radius-full);
@@ -21,13 +31,15 @@
   gap: 6px;
 }
 
-/* Officers Grid */
+/* ── Officer Cards Grid ───────────────────────────────────────── 
+   Used in AdminOfficers.jsx to display officer profile cards. */
 .admin-officers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
+/* Individual officer card with left accent border */
 .admin-officer-card {
   background: var(--bg);
   border: 1px solid var(--border-solid);
@@ -39,58 +51,101 @@
   overflow: hidden;
 }
 .admin-officer-card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary);
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--primary);
 }
-.admin-officer-card:hover { 
-  transform: translateY(-5px); 
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08); 
+.admin-officer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
+/* Card header: avatar + block tag */
 .admin-officer-header {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 .admin-officer-avatar {
-  width: 56px; height: 56px; border-radius: 16px;
-  background: var(--gradient); color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; font-weight: 800;
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
   box-shadow: 0 8px 20px rgba(37,99,235,0.2);
 }
 .admin-block-tag {
-  background: rgba(37,99,235,0.08); color: var(--primary);
-  padding: 5px 14px; border-radius: 999px;
-  font-size: 0.75rem; font-weight: 800;
+  background: rgba(37,99,235,0.08);
+  color: var(--primary);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
   border: 1px solid rgba(37,99,235,0.1);
 }
-.admin-officer-name { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-.admin-officer-role { font-size: 0.8rem; color: var(--text-light); margin-bottom: 16px; }
+.admin-officer-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.admin-officer-role {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
 
-.admin-officer-contacts { display: flex; flex-direction: column; gap: 10px; }
+/* Contact info inside officer card */
+.admin-officer-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .admin-contact-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 0.82rem; color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--text-light);
   transition: color 0.2s;
 }
 .admin-contact-item:hover { color: var(--primary); }
 
-/* Charts Layout */
+/* ── Charts Layout ────────────────────────────────────────────── */
 .admin-charts-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-/* Issues Table Overrides */
-.admin-issues .uv-table thead th { background: #f8fafc; }
-.admin-issues select.officer-status-select { 
-  min-width: 130px; 
-  background: #f8fafc; 
+/* ── Issues Table Overrides ───────────────────────────────────── */
+.admin-issues .uv-table thead th { background: var(--bg-light); }
+.admin-issues select.officer-status-select {
+  min-width: 130px;
+  background: var(--bg-light);
   border-radius: 8px;
 }
 
+/* ── Admin Home Grid (Block Summary + Recent Issues) ──────────── */
+.admin-home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .admin-charts-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .admin-home-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .admin-charts-row { grid-template-columns: 1fr; }

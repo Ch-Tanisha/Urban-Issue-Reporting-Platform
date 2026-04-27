@@ -10,9 +10,31 @@ import Modal from '../../components/Modal'
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title)
 
-const CHART_OPTS = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+// Professional chart color palette (dark-theme compatible)
+const CHART_COLORS = {
+  reported:   '#f87171',  // Soft red
+  inProgress: '#fbbf24',  // Warm amber
+  resolved:   '#34d399',  // Mint green
+  bar:        '#60a5fa',  // Sky blue
+}
 
-export default function OfficerHome({ issues, officer, onStatusChange, onToggleDup }) {
+// Shared chart options — responsive, no legend, clean look
+const CHART_OPTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#1e293b',
+      titleFont: { size: 12 },
+      bodyFont: { size: 11 },
+      padding: 10,
+      cornerRadius: 8,
+    },
+  },
+}
+
+export default function OfficerHome({ issues, officer, onStatusChange, onToggleDup, onNav }) {
   const [statusF,   setStatusF]   = useState('all')
   const [priorityF, setPriorityF] = useState('all')
   const [search,    setSearch]    = useState('')
@@ -39,15 +61,36 @@ export default function OfficerHome({ issues, officer, onStatusChange, onToggleD
 
   const donutData = {
     labels: ['Reported','In Progress','Resolved'],
-    datasets: [{ data:[reported, inProgress, resolved], backgroundColor:['#38bdf8','#fbbf24','#10b981'], borderWidth:0 }]
+    datasets: [{
+      data: [reported, inProgress, resolved],
+      backgroundColor: [CHART_COLORS.reported, CHART_COLORS.inProgress, CHART_COLORS.resolved],
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
   }
   const barData = {
     labels: Object.keys(catCounts),
-    datasets: [{ data:Object.values(catCounts), backgroundColor:'#38bdf8', borderRadius:6 }]
+    datasets: [{
+      data: Object.values(catCounts),
+      backgroundColor: CHART_COLORS.bar,
+      borderRadius: 6,
+      maxBarThickness: 40,
+    }]
   }
 
   return (
     <div className="officer-home">
+      <div className="role-welcome role-welcome-officer" style={{ marginBottom:24 }}>
+        <div>
+          <h1>Welcome back, {(officer?.name || 'Officer').split(' ')[0]} 👋</h1>
+          <p>Handle reports for {officer?.block || 'your block'}, update issue status, and keep citizens informed.</p>
+        </div>
+        <div className="role-welcome-actions">
+          <button className="btn-primary" onClick={() => onNav?.('myissues')}>Open My Issues</button>
+          <button className="btn-ghost" onClick={() => onNav?.('analytics')}>View Analytics</button>
+        </div>
+      </div>
+
       {/* Stats */}
       <div className="stats-grid" style={{ marginBottom:24 }}>
         <StatCard label="Total Issues"  value={total}      color="sky"   icon="📍" sub="Active block issues" />
@@ -91,11 +134,15 @@ export default function OfficerHome({ issues, officer, onStatusChange, onToggleD
               <Doughnut data={donutData} options={{ ...CHART_OPTS, cutout:'72%' }} />
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:10, fontSize:'0.8rem' }}>
-              {[['Reported','#38bdf8',reported],['In Progress','#fbbf24',inProgress],['Resolved','#10b981',resolved]].map(([l,c,v])=>(
-                <div key={l} style={{ display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ width:10, height:10, borderRadius:'50%', background:c, flexShrink:0 }} />
-                  <span style={{ color:'var(--off-muted)' }}>{l}</span>
-                  <strong style={{ marginLeft:'auto', color:'var(--off-text)' }}>{v}</strong>
+              {[
+                ['Reported',    CHART_COLORS.reported,   reported],
+                ['In Progress', CHART_COLORS.inProgress, inProgress],
+                ['Resolved',    CHART_COLORS.resolved,   resolved],
+              ].map(([label, color, value]) => (
+                <div key={label} style={{ display:'flex', alignItems:'center', gap:10 }}>
+                  <span style={{ width:10, height:10, borderRadius:'50%', background:color, flexShrink:0 }} />
+                  <span style={{ color:'var(--off-muted)' }}>{label}</span>
+                  <strong style={{ marginLeft:'auto', color:'var(--off-text)' }}>{value}</strong>
                 </div>
               ))}
             </div>

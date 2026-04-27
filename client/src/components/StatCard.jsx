@@ -1,3 +1,8 @@
+/**
+ * StatCard — Reusable metric card used across all dashboards.
+ * Shows a label, large value, colored icon badge, and optional subtitle.
+ * @param {string} color - One of: blue, green, red, amber, purple, slate, sky
+ */
 export default function StatCard({ label, value, color, icon, sub }) {
   const colors = {
     blue:   { val: '#2563eb', bg: 'rgba(37,99,235,0.08)'  },
@@ -6,6 +11,7 @@ export default function StatCard({ label, value, color, icon, sub }) {
     amber:  { val: '#d97706', bg: 'rgba(217,119,6,0.08)'  },
     purple: { val: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
     slate:  { val: '#475569', bg: 'rgba(71,85,105,0.08)'  },
+    sky:    { val: '#0ea5e9', bg: 'rgba(14,165,233,0.08)' },
   }
   const c = colors[color] || colors.blue
 

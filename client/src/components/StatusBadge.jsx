@@ -1,3 +1,17 @@
+/**
+ * StatusBadge — Displays a colored pill badge for issue status or priority.
+ * 
+ * Usage:
+ *   <StatusBadge value="Reported" type="status" />
+ *   <StatusBadge value="High" type="priority" />
+ * 
+ * Status values:  Reported | In Progress | Resolved | Cancelled
+ * Priority values: High | Medium | Low
+ * 
+ * CSS classes (defined in global.css):
+ *   .badge-reported, .badge-progress, .badge-resolved, .badge-cancelled
+ *   .badge-high, .badge-medium, .badge-low
+ */
 export default function StatusBadge({ value, type = 'status' }) {
   if (type === 'status') {
     const map = {

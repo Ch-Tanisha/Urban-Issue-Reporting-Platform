@@ -1,6 +1,6 @@
 const Issue = require('../models/Issue');
 const BlockOfficer = require('../models/BlockOfficer');
-const { createNotification } = require('./notificationController');
+const { createNotification, notifyOfficersInBlock, notifyAllAdmins } = require('./notificationController');
 
 // @desc    Create a new issue (Citizen)
 // @route   POST /api/issues/create
@@ -27,7 +27,7 @@ const createIssue = async (req, res) => {
       reportedOn: new Date().toISOString().split('T')[0]
     });
 
-    // Notify the citizen their issue was submitted
+    // Notify the citizen that their report was received
     await createNotification(
       req.user._id,
       `Your issue "${title}" has been submitted and is pending review.`,
@@ -35,6 +35,25 @@ const createIssue = async (req, res) => {
       issue._id,
       title
     );
+
+    // Let the block officer(s) in charge of this block know about the new issue
+    await notifyOfficersInBlock(
+      block,
+      `New issue reported in ${block}: "${title}" (${category}, ${priority || 'Medium'} priority)`,
+      'new_issue',
+      issue._id,
+      title
+    );
+
+    // For high-priority issues, also alert all admins
+    if (priority === 'High') {
+      await notifyAllAdmins(
+        `High priority issue in ${block}: "${title}" — needs attention.`,
+        'new_issue',
+        issue._id,
+        title
+      );
+    }
 
     res.status(201).json(issue);
   } catch (error) {

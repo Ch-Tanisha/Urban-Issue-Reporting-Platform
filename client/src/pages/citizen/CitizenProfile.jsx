@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import { blocks } from '../../data/mockData'
 import API from '../../api/axios'
 
+function mailtoHref(value) {
+  const raw = String(value || '').trim()
+  const email = raw.match(/<([^>]+)>/)?.[1] || raw
+  return `mailto:${email.trim()}`
+}
+
 export default function CitizenProfile({ citizen }) {
   const [form, setForm]       = useState({ ...citizen })
   const [editing, setEditing] = useState(false)
@@ -10,6 +16,10 @@ export default function CitizenProfile({ citizen }) {
   const [saving,  setSaving]  = useState(false)
   const [saveErr, setSaveErr] = useState('')
   const [officer, setOfficer] = useState(null)
+  const [pwdForm, setPwdForm] = useState({ current: '', newPwd: '', confirm: '' })
+  const [pwdSaving, setPwdSaving] = useState(false)
+  const [pwdMsg, setPwdMsg] = useState('')
+  const [pwdErr, setPwdErr] = useState('')
 
   // Fetch the block officer assigned to citizen's block
   useEffect(() => {
@@ -60,9 +70,9 @@ export default function CitizenProfile({ citizen }) {
         pincode: form.zip,
         block:   form.block,
       })
-      // Update localStorage with latest user info
-      const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
-      localStorage.setItem('uv_user', JSON.stringify({ ...stored, ...data }))
+      // Update sessionStorage with latest user info
+      const stored = JSON.parse(sessionStorage.getItem('uv_user') || '{}')
+      sessionStorage.setItem('uv_user', JSON.stringify({ ...stored, ...data }))
       setEditing(false)
       setSaved(true)
     } catch (err) {
@@ -72,11 +82,39 @@ export default function CitizenProfile({ citizen }) {
     }
   }
 
+  async function handlePassword(e) {
+    e.preventDefault()
+    setPwdErr('')
+    setPwdMsg('')
+
+    if (pwdForm.newPwd.length < 6) {
+      setPwdErr('New password must be at least 6 characters')
+      return
+    }
+    if (pwdForm.newPwd !== pwdForm.confirm) {
+      setPwdErr('New passwords do not match')
+      return
+    }
+
+    setPwdSaving(true)
+    try {
+      await API.put('/api/auth/password', {
+        currentPassword: pwdForm.current,
+        newPassword: pwdForm.newPwd,
+      })
+      setPwdMsg('Password changed successfully!')
+      setPwdForm({ current: '', newPwd: '', confirm: '' })
+    } catch (err) {
+      setPwdErr(err.response?.data?.message || 'Failed to change password.')
+    } finally {
+      setPwdSaving(false)
+    }
+  }
+
   return (
     <div>
       <div className="page-section-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
-          <p className="eyebrow">My Profile</p>
           <h2>Citizen Details</h2>
           <p>Keep your contact info up to date so officers can reach you.</p>
         </div>
@@ -181,7 +219,7 @@ export default function CitizenProfile({ citizen }) {
                 <div className="officer-name">{officer.name}</div>
                 <div className="officer-block">{officer.assignedBlock}</div>
                 <div style={{ display:'flex', gap:16, marginTop:10, flexWrap:'wrap' }}>
-                  <a href={`mailto:${officer.email}`} className="officer-contact-link btn-ghost btn-sm">✉ Email</a>
+                  <a href={mailtoHref(officer.email)} className="officer-contact-link btn-ghost btn-sm">✉ Email</a>
                   <a href={`tel:${officer.phone}`}    className="officer-contact-link btn-ghost btn-sm">📞 Call</a>
                 </div>
                 <div style={{ marginTop:8, fontSize:'0.82rem', color:'var(--text-light)' }}>
@@ -192,6 +230,56 @@ export default function CitizenProfile({ citizen }) {
           </div>
         </div>
       )}
+
+      <div className="panel" style={{ marginTop:24, maxWidth:600 }}>
+        <div className="panel-header"><h3>🔒 Change Password</h3></div>
+        <div className="panel-body">
+          {pwdMsg && (
+            <div style={{ background:'var(--status-resolved-bg)', color:'var(--status-resolved-text)', padding:'10px 16px', borderRadius:8, fontSize:'0.85rem', marginBottom:16, fontWeight:600 }}>
+              {pwdMsg}
+            </div>
+          )}
+          {pwdErr && (
+            <div style={{ background:'#fef2f2', color:'#dc2626', padding:'10px 16px', borderRadius:8, fontSize:'0.85rem', marginBottom:16, border:'1px solid #fecaca' }}>
+              {pwdErr}
+            </div>
+          )}
+          <form onSubmit={handlePassword} noValidate>
+            <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+              <div className="form-group">
+                <label>Current Password</label>
+                <input
+                  type="password"
+                  value={pwdForm.current}
+                  onChange={e => setPwdForm({ ...pwdForm, current: e.target.value })}
+                  placeholder="Enter current password"
+                />
+              </div>
+              <div className="form-group">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  value={pwdForm.newPwd}
+                  onChange={e => setPwdForm({ ...pwdForm, newPwd: e.target.value })}
+                  placeholder="Min 6 characters"
+                />
+              </div>
+              <div className="form-group">
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  value={pwdForm.confirm}
+                  onChange={e => setPwdForm({ ...pwdForm, confirm: e.target.value })}
+                  placeholder="Re-enter new password"
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn-primary" style={{ marginTop:16 }} disabled={pwdSaving}>
+              {pwdSaving ? '⏳ Changing…' : '🔑 Change Password'}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }

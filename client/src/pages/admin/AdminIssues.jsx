@@ -40,7 +40,6 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
   return (
     <div>
       <div className="page-section-header">
-        <p className="eyebrow">All Issues</p>
         <h2>Reported Issues — All Blocks</h2>
         <p>Filter, update, resolve, or delete issues across the entire system.</p>
       </div>
@@ -147,7 +146,7 @@ export default function AdminIssues({ issues, onResolve, onDelete, onStatus }) {
 
             <div>
               <p style={{ color:'var(--text-light)', fontSize:'0.75rem', fontWeight:600, textTransform:'uppercase', marginBottom:6 }}>Issue Description</p>
-              <p style={{ color:'var(--text)', lineHeight:1.6, background:'#f8fafc', padding:14, borderRadius:10, border:'1px solid var(--border-solid)' }}>{detail.description}</p>
+              <p style={{ color:'var(--text)', lineHeight:1.6, background:'var(--bg-light)', padding:14, borderRadius:10, border:'1px solid var(--border-solid)' }}>{detail.description}</p>
             </div>
           </div>
         )}

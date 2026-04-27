@@ -70,11 +70,43 @@ const getAnalytics = async (req, res) => {
   }
 };
 
-// @desc    Get all block officers
+// @desc    Get all block officers (with self-healing for orphaned records)
 // @route   GET /api/admin/officers
 // @access  Private (Admin)
+//
+// SELF-HEAL: Officers who signed up via the public form only have a User record
+// (role: 'blockofficer') but NO BlockOfficer profile. This function detects those
+// orphaned Users and auto-creates the missing BlockOfficer profile so they appear
+// in the admin panel.
 const getAllOfficers = async (req, res) => {
   try {
+    // Step 1: Find all Users with role 'blockofficer'
+    const officerUsers = await User.find({ role: 'blockofficer' }).select('_id name email phone block');
+
+    // Step 2: Find which of those Users already have a BlockOfficer profile
+    const existingProfiles = await BlockOfficer.find({
+      userId: { $in: officerUsers.map(u => u._id) }
+    }).select('userId');
+
+    const profiledUserIds = new Set(existingProfiles.map(p => p.userId.toString()));
+
+    // Step 3: Auto-create BlockOfficer profiles for orphaned officer Users
+    const orphans = officerUsers.filter(u => !profiledUserIds.has(u._id.toString()));
+
+    for (const user of orphans) {
+      const initials = (user.name || 'OF').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      await BlockOfficer.create({
+        name:          user.name,
+        email:         user.email,
+        phone:         user.phone || '',
+        assignedBlock: user.block || 'Unassigned',
+        userId:        user._id,
+        avatar:        initials,
+      });
+      console.log(`🔧 Auto-created BlockOfficer profile for orphaned user: ${user.email}`);
+    }
+
+    // Step 4: Fetch all officers with populated user data
     const officers = await BlockOfficer.find()
       .populate('userId', 'name email phone role createdAt')
       .sort({ assignedBlock: 1 });
@@ -85,6 +117,7 @@ const getAllOfficers = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch officers' });
   }
 };
+
 
 // @desc    Create a new block officer (Admin)
 // @route   POST /api/admin/officers
@@ -264,6 +297,85 @@ const deleteAllCitizens = async (req, res) => {
   }
 };
 
+// @desc    Create a new admin account (existing admin only)
+// @route   POST /api/admin/create-admin
+// @access  Private (Admin)
+const createAdmin = async (req, res) => {
+  try {
+    const { name, email, password, phone } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required.' });
+    }
+
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({ message: 'An account with this email already exists.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phone: phone || '',
+      role: 'admin'
+    });
+
+    res.status(201).json({
+      message: 'Admin account created successfully.',
+      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+    });
+  } catch (error) {
+    console.error('Create admin error:', error);
+    res.status(500).json({ message: 'Failed to create admin account.' });
+  }
+};
+
+// @desc    Seed the very first admin (only works when NO admin exists in DB)
+// @route   POST /api/admin/seed-admin
+// @access  Public — but auto-locks after first use
+const seedAdmin = async (req, res) => {
+  try {
+    // Guard: refuse if any admin already exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+    if (existingAdmin) {
+      return res.status(403).json({
+        message: 'An administrator account already exists. Seeding is disabled.'
+      });
+    }
+
+    const { name, email, password, phone } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phone: phone || '',
+      role: 'admin'
+    });
+
+    console.log(`🛡️  First admin seeded: ${user.email}`);
+
+    res.status(201).json({
+      message: 'First administrator account created successfully. This endpoint is now locked.',
+      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+    });
+  } catch (error) {
+    console.error('Seed admin error:', error);
+    res.status(500).json({ message: 'Failed to seed admin.' });
+  }
+};
+
 module.exports = {
   getAnalytics,
   getAllOfficers,
@@ -272,5 +384,7 @@ module.exports = {
   deleteOfficer,
   getAllCitizens,
   deleteCitizen,
-  deleteAllCitizens
+  deleteAllCitizens,
+  createAdmin,
+  seedAdmin
 };

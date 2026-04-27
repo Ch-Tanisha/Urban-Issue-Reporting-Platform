@@ -6,6 +6,7 @@ import ReportIssue   from './ReportIssue'
 import MyReports      from './MyReports'
 import CitizenProfile from './CitizenProfile'
 import NotificationBell from '../../components/NotificationBell'
+import ThemeToggle from '../../components/ThemeToggle'
 import API from '../../api/axios'
 import '../citizen/citizen.css'
 
@@ -21,8 +22,11 @@ export default function CitizenDashboard() {
   const [view, setView] = useState('home')
   const [issues, setIssues] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [mobileMenu, setMobileMenu] = useState(false)
 
-  const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
+  // Build the citizen object from the cached session data
+  const stored = JSON.parse(sessionStorage.getItem('uv_user') || '{}')
   const citizen = {
     name: stored.name || 'Citizen',
     email: stored.email || '',
@@ -34,24 +38,44 @@ export default function CitizenDashboard() {
     id: stored.id || ''
   }
 
-  // Fetch citizen's issues from backend
+  // Make sure the logged-in user is actually a citizen
+  async function validateSessionRole() {
+    try {
+      const { data } = await API.get('/api/auth/me')
+      if (data.role !== 'citizen') {
+        sessionStorage.removeItem('uv_token')
+        sessionStorage.removeItem('uv_role')
+        sessionStorage.removeItem('uv_user')
+        navigate('/auth')
+      }
+    } catch {
+      sessionStorage.removeItem('uv_token')
+      sessionStorage.removeItem('uv_role')
+      sessionStorage.removeItem('uv_user')
+      navigate('/auth')
+    }
+  }
+
   async function fetchIssues() {
     try {
       setLoading(true)
+      setError('')
       const { data } = await API.get('/api/issues/my')
       setIssues(data)
     } catch (err) {
       console.error('Failed to fetch issues:', err)
+      setError('Could not load your issues. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
+    validateSessionRole()
     fetchIssues()
   }, [])
 
-  // Create a new issue via API
+  // Submit a new issue through the API
   async function addIssue(formData) {
     try {
       const fd = new FormData()
@@ -71,7 +95,6 @@ export default function CitizenDashboard() {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
-      // Refresh issues list
       await fetchIssues()
       setView('reports')
     } catch (err) {
@@ -80,9 +103,15 @@ export default function CitizenDashboard() {
     }
   }
 
-  // Delete issue (citizen can delete their own — routed through admin endpoint or handled locally)
-  function deleteIssue(id) {
-    setIssues(prev => prev.filter(i => i._id !== id))
+  // Delete an issue via the API, then remove it from the local list
+  async function deleteIssue(id) {
+    try {
+      await API.delete(`/api/issues/${id}`)
+      setIssues(prev => prev.filter(i => i._id !== id))
+    } catch (err) {
+      console.error('Failed to delete issue:', err)
+      alert(err.response?.data?.message || 'Failed to delete issue.')
+    }
   }
 
   const views = {
@@ -101,19 +130,27 @@ export default function CitizenDashboard() {
         onNav={setView}
         userName={citizen.name}
         userRole={`Block: ${citizen.block}`}
+        mobileOpen={mobileMenu}
+        onCloseMobile={() => setMobileMenu(false)}
       />
       <div className="main-content">
         <div className="top-bar">
-          <div>
-            <div className="top-bar-title">{NAV.find(n=>n.view===view)?.label}</div>
-            <div className="top-bar-sub">UrbanVoice Citizen Portal</div>
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <button className="hamburger-btn" onClick={() => setMobileMenu(true)}>☰</button>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <ThemeToggle />
             <NotificationBell />
             <button className="btn-primary btn-sm" onClick={() => setView('report')}>+ New Report</button>
           </div>
         </div>
         <div className="page-content animate-fadeIn">
+          {error && (
+            <div style={{ background:'#fef2f2', color:'#dc2626', padding:'14px 20px', borderRadius:12, marginBottom:20, fontWeight:600, fontSize:'0.9rem', border:'1px solid #fecaca' }}>
+              ⚠️ {error}
+              <button onClick={fetchIssues} style={{ marginLeft:12, background:'none', border:'1px solid #dc2626', borderRadius:8, padding:'4px 12px', color:'#dc2626', cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Retry</button>
+            </div>
+          )}
           {views[view]}
         </div>
       </div>

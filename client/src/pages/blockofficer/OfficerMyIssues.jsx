@@ -1,12 +1,17 @@
 import StatusBadge from '../../components/StatusBadge'
 
+function mailtoHref(value) {
+  const raw = String(value || '').trim()
+  const email = raw.match(/<([^>]+)>/)?.[1] || raw
+  return `mailto:${email.trim()}`
+}
+
 export default function OfficerMyIssues({ issues, officer, onStatusChange }) {
   const active = issues.filter(i => i.status === 'In Progress' || i.status === 'Resolved')
 
   return (
     <div>
       <div className="page-section-header">
-        <p className="eyebrow">My Issues</p>
         <h2>Issues I'm Working On</h2>
         <p>Issues you've started resolving (In Progress or Resolved) in {officer.block}.</p>
       </div>
@@ -31,7 +36,7 @@ export default function OfficerMyIssues({ issues, officer, onStatusChange }) {
               <div style={{ marginTop:12, borderTop:'1px solid var(--off-border)', paddingTop:12 }}>
                 <p style={{ fontSize:'0.75rem', fontWeight:600, color:'var(--off-muted)', marginBottom:6, textTransform:'uppercase' }}>Citizen Info</p>
                 <p style={{ fontSize:'0.85rem', fontWeight:600 }}>{issue.citizenName}</p>
-                <a href={`mailto:${issue.citizenContact}`} style={{ fontSize:'0.8rem', color:'var(--off-accent)', display:'block', marginTop:2 }}>{issue.citizenContact}</a>
+                <a href={mailtoHref(issue.citizenContact)} style={{ fontSize:'0.8rem', color:'var(--off-accent)', display:'block', marginTop:2 }}>{issue.citizenContact}</a>
                 <a href={`tel:${issue.citizenPhone}`}      style={{ fontSize:'0.8rem', color:'var(--off-accent)', display:'block', marginTop:2 }}>{issue.citizenPhone}</a>
               </div>
               <div style={{ marginTop:12 }}>

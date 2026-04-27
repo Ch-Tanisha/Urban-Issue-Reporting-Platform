@@ -17,7 +17,6 @@ export default function OfficerAnalytics({ issues, officer }) {
   return (
     <div>
       <div className="page-section-header">
-        <p className="eyebrow">Block Analytics</p>
         <h2>Statistics for {officer.block}</h2>
         <p>Quick metrics based on current non-duplicate issues in your block.</p>
       </div>

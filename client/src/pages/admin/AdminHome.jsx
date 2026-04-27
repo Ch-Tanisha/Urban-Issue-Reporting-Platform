@@ -1,7 +1,7 @@
 import StatCard from '../../components/StatCard'
 import StatusBadge from '../../components/StatusBadge'
 
-export default function AdminHome({ issues }) {
+export default function AdminHome({ issues, adminName, onNav }) {
   const total      = issues.length
   const reported   = issues.filter(i => i.status === 'Reported').length
   const inProgress = issues.filter(i => i.status === 'In Progress').length
@@ -20,8 +20,18 @@ export default function AdminHome({ issues }) {
 
   return (
     <div className="admin-home">
+      <div className="role-welcome role-welcome-admin" style={{ marginBottom:24 }}>
+        <div>
+          <h1>Welcome back, {(adminName || 'Admin').split(' ')[0]} 👋</h1>
+          <p>Oversee city-wide issue flow, monitor response rates, and coordinate block officers.</p>
+        </div>
+        <div className="role-welcome-actions">
+          <button className="btn-primary" onClick={() => onNav('issues')}>Review Reported Issues</button>
+          <button className="btn-ghost" onClick={() => onNav('officers')}>Manage Officers</button>
+        </div>
+      </div>
+
       <div className="page-section-header" style={{ marginBottom:32 }}>
-        <p className="eyebrow">Overview</p>
         <h2>Control Panel</h2>
         <p>Real-time monitoring of urban issues across all active blocks.</p>
       </div>
@@ -36,8 +46,8 @@ export default function AdminHome({ issues }) {
         <StatCard label="Resolution Rate" value={total ? `${Math.round((resolved/total)*100)}%` : '0%'} color="purple" icon="📈" sub="Platform-wide" />
       </div>
 
-      {/* Block summary + Recent */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1.5fr', gap:20 }}>
+      {/* Block summary + Recent issues (responsive grid via admin.css) */}
+      <div className="admin-home-grid">
         {/* Block Overview */}
         <div className="panel">
           <div className="panel-header"><h3>Block Summary</h3></div>

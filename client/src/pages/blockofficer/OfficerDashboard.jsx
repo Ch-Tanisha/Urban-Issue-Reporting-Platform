@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
 import OfficerHome      from './OfficerHome'
 import OfficerMyIssues  from './OfficerMyIssues'
 import OfficerAnalytics from './OfficerAnalytics'
 import OfficerProfile   from './OfficerProfile'
 import NotificationBell from '../../components/NotificationBell'
+import ThemeToggle from '../../components/ThemeToggle'
 import API from '../../api/axios'
 import './officer.css'
 
@@ -16,7 +18,8 @@ const NAV = [
 ]
 
 export default function OfficerDashboard() {
-  const stored = JSON.parse(localStorage.getItem('uv_user') || '{}')
+  const navigate = useNavigate()
+  const stored = JSON.parse(sessionStorage.getItem('uv_user') || '{}')
   const [officer, setOfficer] = useState({
     name: stored.name || 'Officer',
     email: stored.email || '',
@@ -29,8 +32,28 @@ export default function OfficerDashboard() {
   const [issues, setIssues] = useState([])
   const [view, setView]     = useState('home')
   const [loading, setLoading] = useState(true)
+  const [error, setError]   = useState('')
+  const [mobileMenu, setMobileMenu] = useState(false)
 
-  // Fetch officer profile from backend
+  // Confirm the session token actually belongs to a block officer
+  async function validateSessionRole() {
+    try {
+      const { data } = await API.get('/api/auth/me')
+      if (data.role !== 'blockofficer') {
+        sessionStorage.removeItem('uv_token')
+        sessionStorage.removeItem('uv_role')
+        sessionStorage.removeItem('uv_user')
+        navigate('/auth')
+      }
+    } catch {
+      sessionStorage.removeItem('uv_token')
+      sessionStorage.removeItem('uv_role')
+      sessionStorage.removeItem('uv_user')
+      navigate('/auth')
+    }
+  }
+
+  // Pull the officer's detailed profile (includes assigned block info)
   async function fetchProfile() {
     try {
       const { data } = await API.get('/api/block/profile')
@@ -47,25 +70,28 @@ export default function OfficerDashboard() {
     }
   }
 
-  // Fetch assigned block issues
+  // Get all issues that belong to this officer's assigned block
   async function fetchIssues() {
     try {
       setLoading(true)
+      setError('')
       const { data } = await API.get('/api/block/issues')
       setIssues(data)
     } catch (err) {
       console.error('Failed to fetch block issues:', err)
+      setError('Could not load issues for your block. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
+    validateSessionRole()
     fetchProfile()
     fetchIssues()
   }, [])
 
-  // Update issue status via API
+  // Change the status of an issue (Reported → In Progress → Resolved)
   async function updateStatus(id, status) {
     try {
       await API.put(`/api/issues/${id}/status`, { status })
@@ -76,7 +102,7 @@ export default function OfficerDashboard() {
     }
   }
 
-  // Toggle duplicate flag via API
+  // Flag or un-flag an issue as a duplicate
   async function toggleDuplicate(id) {
     try {
       const { data } = await API.put(`/api/issues/${id}/duplicate`)
@@ -87,14 +113,14 @@ export default function OfficerDashboard() {
   }
 
   const views = {
-    home:      <OfficerHome      issues={issues} officer={officer} onStatusChange={updateStatus} onToggleDup={toggleDuplicate} loading={loading} />,
+    home:      <OfficerHome      issues={issues} officer={officer} onStatusChange={updateStatus} onToggleDup={toggleDuplicate} onNav={setView} loading={loading} />,
     myissues:  <OfficerMyIssues  issues={issues} officer={officer} onStatusChange={updateStatus} />,
     analytics: <OfficerAnalytics issues={issues} officer={officer} />,
     profile:   <OfficerProfile   officer={officer} />,
   }
 
   return (
-    <div className="dashboard-wrapper officer-theme">
+    <div className="dashboard-wrapper">
       <Sidebar
         role="officer"
         navItems={NAV}
@@ -102,19 +128,27 @@ export default function OfficerDashboard() {
         onNav={setView}
         userName={officer.name}
         userRole={officer.block}
+        mobileOpen={mobileMenu}
+        onCloseMobile={() => setMobileMenu(false)}
       />
       <div className="main-content">
-        <div className="top-bar officer-topbar">
-          <div>
-            <div className="top-bar-title">{NAV.find(n=>n.view===view)?.label}</div>
-            <div className="top-bar-sub">Managing issues for <strong>{officer.block}</strong></div>
+        <div className="top-bar">
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <button className="hamburger-btn" onClick={() => setMobileMenu(true)}>☰</button>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <ThemeToggle />
             <NotificationBell />
             <div className="officer-topbar-badge">{officer.block}</div>
           </div>
         </div>
         <div className="page-content animate-fadeIn">
+          {error && (
+            <div style={{ background:'#fef2f2', color:'#dc2626', padding:'14px 20px', borderRadius:12, marginBottom:20, fontWeight:600, fontSize:'0.9rem', border:'1px solid #fecaca' }}>
+              ⚠️ {error}
+              <button onClick={fetchIssues} style={{ marginLeft:12, background:'none', border:'1px solid #dc2626', borderRadius:8, padding:'4px 12px', color:'#dc2626', cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Retry</button>
+            </div>
+          )}
           {views[view]}
         </div>
       </div>

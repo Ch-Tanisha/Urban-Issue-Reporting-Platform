@@ -44,9 +44,10 @@
 
 /* ---- Form Panel ---- */
 .auth-form-panel {
-  flex: 1; background: white;
+  flex: 1; background: var(--bg);
   display: flex; align-items: center; justify-content: center;
   padding: 40px; overflow-y: auto;
+  position: relative;
 }
 .auth-form-inner { width: 100%; max-width: 420px; }
 .auth-logo {
@@ -69,13 +70,13 @@
   padding: 10px 14px;
   border: 1.5px solid var(--border-solid);
   border-radius: 9px; font-size: 0.88rem;
-  color: var(--text); background: #fafafa;
+  color: var(--text); background: var(--bg-light);
   transition: var(--transition); outline: none; font-family: inherit;
 }
 .auth-field input:focus,
 .auth-field select:focus,
 .auth-field textarea:focus {
-  border-color: var(--primary); background: white;
+  border-color: var(--primary); background: var(--bg);
   box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
 }
 .auth-field input.err,
@@ -133,6 +134,16 @@
   font-size: 0.875rem;
 }
 .auth-switch button:hover { text-decoration: underline; }
+
+.auth-link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+.auth-link-btn:hover { text-decoration: underline; }
 
 /* Scroll area for signup */
 .auth-scroll-area {
