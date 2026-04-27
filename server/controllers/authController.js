@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Use different JWT secrets per role for cleaner access control.
+// Resolve JWT secret based on user role.
 const getRoleSecret = (role) => {
   switch (role) {
     case 'admin':
@@ -16,13 +16,13 @@ const getRoleSecret = (role) => {
   }
 };
 
-// Token contains user id + role and expires in 7 days.
+// Create a signed JWT that includes user id and role.
 const generateToken = (id, role) => {
   const secret = getRoleSecret(role);
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 
-// Keep auth token in httpOnly cookie so frontend JS cannot read it directly.
+// Store auth token in an httpOnly cookie.
 const setAuthCookie = (res, token) => {
   res.cookie('uv_token', token, {
     httpOnly: true,
@@ -33,7 +33,7 @@ const setAuthCookie = (res, token) => {
   });
 };
 
-// Send safe user fields to frontend.
+// Return only safe user fields to the client.
 const userPayload = (user) => ({
   id: user._id,
   name: user.name,
@@ -45,7 +45,7 @@ const userPayload = (user) => ({
   city: user.city || '',
 });
 
-// Public signup is citizen/officer only. Admin signup is blocked here.
+// Public registration excludes admin accounts.
 const registerCitizen = async (req, res) => {
   try {
     const {
@@ -119,7 +119,7 @@ const loginCitizen = async (req, res) => {
       return res.status(404).json({ message: 'No account found with this email. Please register first.' });
     }
 
-    // Prevent role-mismatch login from the wrong form.
+    // Reject login if the selected role does not match the account role.
     if (user.role !== 'citizen') {
       const label = user.role === 'blockofficer' ? 'Block Officer' : 'Administrator';
       return res.status(403).json({
@@ -206,7 +206,7 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-// Legacy endpoint kept so old clients do not break.
+// Legacy endpoint kept for backward compatibility.
 const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;

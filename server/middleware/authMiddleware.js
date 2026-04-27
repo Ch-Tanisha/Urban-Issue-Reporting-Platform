@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Match token verification secret with role embedded in token.
+// Resolve verification secret using the role embedded in the token.
 const getRoleSecret = (role) => {
   switch (role) {
     case 'admin':        return process.env.JWT_SECRET_ADMIN   || process.env.JWT_SECRET;
@@ -11,18 +11,18 @@ const getRoleSecret = (role) => {
   }
 };
 
-// Main auth guard used by protected routes.
+// Authenticate requests for protected routes.
 const protect = async (req, res, next) => {
   let token;
 
-  // Preferred source: Authorization header.
+  // Primary source: Authorization header.
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  // Fallback source: cookie token.
+  // Fallback source: httpOnly auth cookie.
   else if (req.cookies && req.cookies.uv_token) {
     token = req.cookies.uv_token;
   }
@@ -32,7 +32,7 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    // Decode first to read role, then verify with role secret.
+    // Decode to read role, then verify signature with role-specific secret.
     const decoded = jwt.decode(token);
     if (!decoded || !decoded.id) {
       return res.status(401).json({ message: 'Not authorized — malformed token.' });
@@ -41,7 +41,7 @@ const protect = async (req, res, next) => {
     const secret = getRoleSecret(decoded.role);
     const verified = jwt.verify(token, secret);
 
-  // Attach logged-in user to request for next handlers.
+    // Attach authenticated user to request context.
     req.user = await User.findById(verified.id).select('-password');
     if (!req.user) {
       return res.status(401).json({ message: 'Not authorized — user no longer exists.' });

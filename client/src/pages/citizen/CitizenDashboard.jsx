@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
 import CitizenHome    from './CitizenHome'
 import ReportIssue   from './ReportIssue'
@@ -25,7 +25,7 @@ export default function CitizenDashboard() {
   const [error, setError] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
 
-  // Read profile basics from the current session cache.
+  // Initialize profile fields from session storage.
   const stored = JSON.parse(sessionStorage.getItem('uv_user') || '{}')
   const citizen = {
     name: stored.name || 'Citizen',
@@ -38,7 +38,7 @@ export default function CitizenDashboard() {
     id: stored.id || ''
   }
 
-  // Guard: only citizens are allowed on this dashboard.
+  // Ensure the current session belongs to a citizen user.
   async function validateSessionRole() {
     try {
       const { data } = await API.get('/api/auth/me')
@@ -56,7 +56,7 @@ export default function CitizenDashboard() {
     }
   }
 
-  // Load issues reported by the logged-in citizen.
+  // Fetch all issues reported by the current citizen.
   async function fetchIssues() {
     try {
       setLoading(true)
@@ -71,13 +71,13 @@ export default function CitizenDashboard() {
     }
   }
 
-  // Initial load: validate role, then fetch data.
+  // Perform role validation and initial data fetch on mount.
   useEffect(() => {
     validateSessionRole()
     fetchIssues()
   }, [])
 
-  // Create a new issue and refresh the reports view.
+  // Submit a new issue and refresh the reports view.
   async function addIssue(formData) {
     try {
       const fd = new FormData()
@@ -116,7 +116,7 @@ export default function CitizenDashboard() {
     }
   }
 
-  // View-to-component map used by sidebar navigation.
+  // Map active view key to the corresponding page component.
   const views = {
     home:    <CitizenHome    issues={issues} onNav={setView} citizen={citizen} loading={loading} />,
     report:  <ReportIssue   onSubmit={addIssue} onCancel={() => setView('home')} citizen={citizen} />,

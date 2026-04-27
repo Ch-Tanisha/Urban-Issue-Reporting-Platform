@@ -45,7 +45,7 @@ const LOGO_SVG = (
 function useCountUp(target, active) {
   const [val, setVal] = useState(0)
   useEffect(() => {
-    // Start counting only after the section becomes visible.
+    // Start the animation only when the stat section becomes visible.
     if (!active) return
     let current = 0
     const step = Math.ceil(target / 60)
@@ -82,7 +82,7 @@ export default function LandingPage() {
 
   return (
     <div className="lp-root">
-      {/* NAV */}
+      {/* Top navigation */}
       <nav className="lp-nav">
         <div className="lp-nav-inner">
           <a href="#" className="lp-logo">
@@ -104,7 +104,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* Hero section */}
       <section className="lp-hero">
         <div className="lp-hero-content animate-fadeInUp">
           <h1 className="lp-hero-title">Report Urban Issues,<br />Drive Real Change</h1>
@@ -122,7 +122,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FEATURES */}
+      {/* Features section */}
       <section className="lp-section lp-features" id="features">
         <div className="lp-container">
           <p className="lp-eyebrow">What We Offer</p>
@@ -143,7 +143,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
+      {/* How it works section */}
       <section className="lp-section lp-how" id="how-it-works">
         <div className="lp-container">
           <p className="lp-eyebrow">Simple Process</p>

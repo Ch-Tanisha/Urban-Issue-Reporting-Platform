@@ -35,7 +35,7 @@ export default function OfficerDashboard() {
   const [error, setError]   = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
 
-  // Guard: only block officers are allowed on this dashboard.
+  // Ensure the current session belongs to a block officer.
   async function validateSessionRole() {
     try {
       const { data } = await API.get('/api/auth/me')
@@ -53,7 +53,7 @@ export default function OfficerDashboard() {
     }
   }
 
-  // Load officer profile details, including assigned block.
+  // Fetch officer profile details, including assigned block.
   async function fetchProfile() {
     try {
       const { data } = await API.get('/api/block/profile')
@@ -70,7 +70,7 @@ export default function OfficerDashboard() {
     }
   }
 
-  // Load issues for the officer's assigned block.
+  // Fetch issues that belong to the officer's assigned block.
   async function fetchIssues() {
     try {
       setLoading(true)
@@ -102,7 +102,7 @@ export default function OfficerDashboard() {
     }
   }
 
-  // Toggle duplicate flag for an issue.
+  // Toggle the duplicate flag for an issue.
   async function toggleDuplicate(id) {
     try {
       const { data } = await API.put(`/api/issues/${id}/duplicate`)
