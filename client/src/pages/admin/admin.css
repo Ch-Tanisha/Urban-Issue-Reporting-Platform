@@ -1,23 +1,9 @@
-/* ============================================================
-   UrbanVoice — Admin Dashboard CSS (Premium Light Aesthetic)
-   
-   The admin dashboard uses the default light theme from global.css.
-   This file contains admin-specific layout overrides:
-   - Top bar styling
-   - Officer cards grid
-   - Charts layout
-   - Issues table overrides
-   - Responsive breakpoints
-   ============================================================ */
-
-/* ── Top Bar ──────────────────────────────────────────────────── */
 .admin-theme .top-bar {
   background: var(--bg);
   border-bottom: 1px solid var(--border-solid);
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-/* Admin badge shown next to the notification bell */
 .admin-topbar-badge {
   padding: 6px 16px;
   border-radius: var(--radius-full);
@@ -31,15 +17,12 @@
   gap: 6px;
 }
 
-/* ── Officer Cards Grid ───────────────────────────────────────── 
-   Used in AdminOfficers.jsx to display officer profile cards. */
 .admin-officers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
-/* Individual officer card with left accent border */
 .admin-officer-card {
   background: var(--bg);
   border: 1px solid var(--border-solid);
@@ -62,7 +45,6 @@
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
-/* Card header: avatar + block tag */
 .admin-officer-header {
   display: flex;
   justify-content: space-between;
@@ -102,7 +84,6 @@
   margin-bottom: 16px;
 }
 
-/* Contact info inside officer card */
 .admin-officer-contacts {
   display: flex;
   flex-direction: column;
@@ -118,14 +99,12 @@
 }
 .admin-contact-item:hover { color: var(--primary); }
 
-/* ── Charts Layout ────────────────────────────────────────────── */
 .admin-charts-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-/* ── Issues Table Overrides ───────────────────────────────────── */
 .admin-issues .uv-table thead th { background: var(--bg-light); }
 .admin-issues select.officer-status-select {
   min-width: 130px;
@@ -133,14 +112,12 @@
   border-radius: 8px;
 }
 
-/* ── Admin Home Grid (Block Summary + Recent Issues) ──────────── */
 .admin-home-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   gap: 20px;
 }
 
-/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .admin-charts-row { grid-template-columns: 1fr 1fr; }
 }

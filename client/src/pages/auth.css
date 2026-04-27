@@ -1,12 +1,7 @@
-/* ============================================================
-   Auth Page CSS
-   ============================================================ */
-
 .auth-root {
   display: flex; min-height: 100vh;
 }
 
-/* ---- Image Panel ---- */
 .auth-image-panel {
   flex: 1;
   background:
@@ -42,7 +37,6 @@
 .auth-badge-num { font-size: 1.5rem; font-weight: 800; }
 .auth-badge-lbl { font-size: 0.75rem; opacity: 0.85; margin-top: 2px; }
 
-/* ---- Form Panel ---- */
 .auth-form-panel {
   flex: 1; background: var(--bg);
   display: flex; align-items: center; justify-content: center;
@@ -59,7 +53,6 @@
 .auth-form-inner h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 4px; color: var(--text); }
 .auth-subtitle { color: var(--text-light); font-size: 0.88rem; margin-bottom: 28px; }
 
-/* ---- Fields ---- */
 .auth-field { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
 .auth-field label {
   font-size: 0.83rem; font-weight: 600; color: var(--text);
@@ -87,7 +80,6 @@
 
 .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* Password toggle */
 .auth-pwd { position: relative; }
 .auth-pwd input { width: 100%; padding-right: 40px; }
 .auth-eye {
@@ -96,13 +88,11 @@
   color: var(--text-light); line-height: 1;
 }
 
-/* Strength bar */
 .auth-strength-bar {
   height: 4px; background: var(--bg-muted);
   border-radius: 2px; margin-top: 6px; overflow: hidden;
 }
 
-/* Checkbox */
 .auth-checkbox {
   display: flex; align-items: flex-start; gap: 10px;
   margin: 18px 0 4px;
@@ -111,7 +101,6 @@
 .auth-checkbox label { font-size: 0.83rem; color: var(--text); }
 .auth-checkbox a { color: var(--primary); font-weight: 600; }
 
-/* Submit */
 .auth-submit {
   width: 100%; padding: 13px;
   background: var(--gradient); color: white;
@@ -123,7 +112,6 @@
 }
 .auth-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,99,235,0.4); }
 
-/* Switch */
 .auth-switch {
   text-align: center; margin-top: 20px;
   font-size: 0.875rem; color: var(--text-light);
@@ -135,17 +123,6 @@
 }
 .auth-switch button:hover { text-decoration: underline; }
 
-.auth-link-btn {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 0.84rem;
-}
-.auth-link-btn:hover { text-decoration: underline; }
-
-/* Scroll area for signup */
 .auth-scroll-area {
   max-height: calc(100vh - 240px);
   overflow-y: auto; padding-right: 4px;
