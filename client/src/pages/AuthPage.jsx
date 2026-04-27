@@ -18,6 +18,7 @@ function passwordStrength(p) {
   return s
 }
 
+// Clear current tab session before fresh login/signup.
 function clearSession() {
   sessionStorage.removeItem('uv_token')
   sessionStorage.removeItem('uv_user')
@@ -60,6 +61,7 @@ export default function AuthPage() {
 
     setLoading(true)
     try {
+      // Each role has its own login endpoint.
       const roleEndpoints = {
         citizen: '/api/auth/login/citizen',
         officer: '/api/auth/login/officer',
@@ -72,6 +74,7 @@ export default function AuthPage() {
         password: login.password
       })
 
+      // Store auth details for protected dashboard routing.
       sessionStorage.setItem('uv_token', data.token)
       const frontendRole = data.user.role === 'blockofficer' ? 'officer' : data.user.role
       sessionStorage.setItem('uv_role', frontendRole)

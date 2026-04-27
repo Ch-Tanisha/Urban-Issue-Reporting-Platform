@@ -25,7 +25,7 @@ export default function CitizenDashboard() {
   const [error, setError] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
 
-  // Build the citizen object from the cached session data
+  // Read profile basics from the current session cache.
   const stored = JSON.parse(sessionStorage.getItem('uv_user') || '{}')
   const citizen = {
     name: stored.name || 'Citizen',
@@ -38,7 +38,7 @@ export default function CitizenDashboard() {
     id: stored.id || ''
   }
 
-  // Make sure the logged-in user is actually a citizen
+  // Guard: only citizens are allowed on this dashboard.
   async function validateSessionRole() {
     try {
       const { data } = await API.get('/api/auth/me')
@@ -56,6 +56,7 @@ export default function CitizenDashboard() {
     }
   }
 
+  // Load issues reported by the logged-in citizen.
   async function fetchIssues() {
     try {
       setLoading(true)
@@ -70,12 +71,13 @@ export default function CitizenDashboard() {
     }
   }
 
+  // Initial load: validate role, then fetch data.
   useEffect(() => {
     validateSessionRole()
     fetchIssues()
   }, [])
 
-  // Submit a new issue through the API
+  // Create a new issue and refresh the reports view.
   async function addIssue(formData) {
     try {
       const fd = new FormData()
@@ -103,7 +105,7 @@ export default function CitizenDashboard() {
     }
   }
 
-  // Delete an issue via the API, then remove it from the local list
+  // Delete an issue and update local state.
   async function deleteIssue(id) {
     try {
       await API.delete(`/api/issues/${id}`)
@@ -114,6 +116,7 @@ export default function CitizenDashboard() {
     }
   }
 
+  // View-to-component map used by sidebar navigation.
   const views = {
     home:    <CitizenHome    issues={issues} onNav={setView} citizen={citizen} loading={loading} />,
     report:  <ReportIssue   onSubmit={addIssue} onCancel={() => setView('home')} citizen={citizen} />,

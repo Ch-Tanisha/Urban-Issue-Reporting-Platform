@@ -45,6 +45,7 @@ const LOGO_SVG = (
 function useCountUp(target, active) {
   const [val, setVal] = useState(0)
   useEffect(() => {
+    // Start counting only after the section becomes visible.
     if (!active) return
     let current = 0
     const step = Math.ceil(target / 60)
